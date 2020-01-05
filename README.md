@@ -28,11 +28,11 @@ pip install steam_community_market
 Usage
 =====
 ```python
-from steam_community_market.prices import Prices
+from steam_community_market.market import Market
 
-market = Prices('USD')
+market = Market('USD')
 ```
-`'USD'` can either be `str` or `int`. Find the currencies supported [here](https://github.com/offish/steam_community_market/blob/master/steam_community_market/prices.py#L5).
+`'USD'` can either be `str` or `int`. Find the currencies supported [here](https://github.com/offish/steam_community_market/blob/master/steam_community_market/market.py#L5).
 
 
 

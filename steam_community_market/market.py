@@ -37,7 +37,7 @@ class ESteamCurrency(enum.IntEnum):
     AED = 32
 
 
-class Prices:
+class Market:
     url = 'http://steamcommunity.com/market/priceoverview'
 
     def __init__(self, currency: (str, int) = 1):

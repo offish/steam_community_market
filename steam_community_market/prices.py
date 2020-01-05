@@ -41,17 +41,20 @@ class Prices:
     url = 'http://steamcommunity.com/market/priceoverview'
 
     def __init__(self, currency: (str, int) = 1):
-        '''Sets the currency to be outputted.
-        \n`currency`: 1, 'USD' or leave empty for American Dollars. For other currencies take a look at the README.'''
+        """
+        Sets the currency to be outputted.
 
-        if type(currency) is str:
+        :param currency: 1, 'USD' or leave empty for American Dollars. For other currencies take a look at the README.
+        """
+
+        if isinstance(currency, str):
             currency = currency.upper()
 
             for i in ESteamCurrency:
                 if currency == i.name:
                     currency = ESteamCurrency[currency].value
 
-        elif type(currency) is int:
+        elif isinstance(currency, int):
             if currency > 32 or currency < 1:
                 currency = 1
 
@@ -61,14 +64,16 @@ class Prices:
         self.currency = currency
 
     def get_price(self, name: str, app_id: int) -> dict:
-        '''Gets the price(s) and volume of an item.
-        \n`name`: The name of the item how it appears on the Steam Community Market.
-        \n`app_id`: The AppID of the item.'''
+        """
+        Gets the price(s) and volume of an item.
+        :param name: The name of the item how it appears on the Steam Community Market.
+        :param app_id: The AppID of the item.
+        """
 
-        if type(name) is not str:
+        if not isinstance(name, str):
             raise TypeError('name must be str')
 
-        if type(app_id) is not int:
+        if not isinstance(app_id, int):
             raise TypeError('app_id must be int')
 
         payload = {'appid': app_id, 'market_hash_name': name,
@@ -77,13 +82,16 @@ class Prices:
         return request(self.url, payload)
 
     def get_prices(self, names: list, app_id: int) -> dict:
-        '''Gets the price(s) and volume of each item in the list.
-        \n`names`: A list of item names how each item appears on the Steam Community Market.
-        \n`app_id`: The AppID of all the items. Every item in the list must have the same AppID.'''
+        """
+        Gets the price(s) and volume of each item in the list.
+
+        :param names: A list of item names how each item appears on the Steam Community Market.
+        :param app_id: The AppID of all the items. Every item in the list must have the same AppID.
+        """
 
         prices = {}
 
-        if type(names) is not list:
+        if not isinstance(names, list):
             raise TypeError('names must be list')
 
         for name in names:

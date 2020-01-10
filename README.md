@@ -26,6 +26,12 @@ Installation
 pip install steam_community_market
 ```
 
+Update
+======
+```
+pip install --upgrade steam_commmunity_market
+```
+
 Usage
 =====
 ```python

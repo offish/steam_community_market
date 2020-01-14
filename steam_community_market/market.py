@@ -123,7 +123,7 @@ class Market:
             prices[item] = self.get_price(item, items[item]['appid'])
         return prices
 
-    def has_invalid_name(self, name: str):
+    def has_invalid_name(self, name: str) -> bool:
         if isinstance(name, str):
             try:
                 return name.index('/') >= 0

@@ -91,22 +91,21 @@ class Market:
         """
 
         prices = {}
-
-        if not isinstance(names, list):
-            raise TypeError('names must be list')
         
         if isinstance(app_id, int):
             for name in names:
                 prices[name] = self.get_price(name, app_id)
 
-        elif isinstance(app_id, list):
+        elif not isinstance(names, list):
+            raise TypeError('names must be list')
+
+        else:
             if len(names) == len(app_id):
                 for i in range(len(names)):
                     name = names[i]
                     prices[name] = self.get_price(name, app_id[i])
             else:
                 raise IndexError('names and app_id needs to have the same len')
-
         return prices
 
     def get_prices_from_dict(self, items: dict) -> dict:
@@ -124,7 +123,7 @@ class Market:
             prices[item] = self.get_price(item, items[item]['appid'])
         return prices
 
-    def has_invalid_name(self, name: str) -> bool:
+    def has_invalid_name(self, name: str):
         if isinstance(name, str):
             try:
                 return name.index('/') >= 0

@@ -1,9 +1,9 @@
 # steam_community_market
 [![Version](https://img.shields.io/pypi/v/steam_community_market.svg)](https://pypi.org/project/steam_community_market/)
-[![License](https://img.shields.io/github/license/offish/steam_community_market.svg)](https://github.com/offish/steam_community_market/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/offish/steam_community_market.svg)](https://github.com/offish/steam_community_market/blob/master/LICENSE.txt)
 [![Stars](https://img.shields.io/github/stars/offish/steam_community_market.svg)](https://github.com/offish/steam_community_market/stargazers)
 [![Issues](https://img.shields.io/github/issues/offish/steam_community_market.svg)](https://github.com/offish/steam_community_market/issues)
-[![Size]('https://img.shields.io/github/repo-size/offish/steam_community_market.svg)]()
+[![Size](https://img.shields.io/github/repo-size/offish/steam_community_market.svg)](https://pypi.org/project/steam-community-market/)
 [![Discord](https://img.shields.io/discord/467040686982692865.svg)](https://discord.gg/t8nHSvA)
 <br>
 [![Steam Donate Button](https://img.shields.io/badge/donate-steam-green.svg)](https://steamcommunity.com/tradeoffer/new/?partner=293059984&token=0-l_idZR "Support this project via Steam")

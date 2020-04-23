@@ -41,14 +41,16 @@ Usage
     1097
 
 
-`"USD"` can either be `ESteamCurrency`, `str`, `int` or empty. Find the currencies supported `here`_
+`"USD"` can either be `ESteamCurrency`, `str`, `int` or empty. Find the currencies supported `here`_.
 
 .. _here: https://github.com/offish/steam_community_market/blob/master/steam_community_market/enums.py#L4
 
 
 Documentation
 -------------
-Documentation will be added soon.
+Documentation for this package can be found on `readthedocs`_.
+
+.. _readthedocs: https://steam-community-market.readthedocs.io/en/latest/
 
 Links
 -----
@@ -87,7 +89,7 @@ SOFTWARE.
 
 
 
-.. _Documentation: https://offi.sh
+.. _Documentation: https://steam-community-market.readthedocs.io/en/latest/
 .. _Releases: https://pypi.org/project/steam_community_market/
 .. _Issue tracker: https://github.com/offish/steam_community_market/issues
 .. _Discord: https://discord.gg/t8nHSvA

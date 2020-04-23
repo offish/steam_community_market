@@ -1,138 +1,286 @@
+from steam_community_market.enums import ESteamCurrency, AppID
 from steam_community_market.request import request
-from typing import Union
-import enum
 
 
-class ESteamCurrency(enum.IntEnum):
-    USD = 1
-    GBP = 2
-    EUR = 3
-    CHF = 4
-    RUB = 5
-    PLN = 6
-    BRL = 7
-    JPY = 8
-    NOK = 9
-    IDR = 10
-    MYR = 11
-    PHP = 12
-    SGD = 13
-    THB = 14
-    VND = 15
-    KRW = 16
-    TRY = 17
-    UAH = 18
-    MXN = 19
-    CAD = 20
-    AUD = 21
-    NZD = 22
-    CNY = 23
-    INR = 24
-    CLP = 25
-    PEN = 26
-    COP = 27
-    ZAR = 28
-    HKD = 29
-    TWD = 30
-    SAR = 31
-    AED = 32
+# These currencies will not be returned as float, but str instead due to weird formatting
+UNSUPPORTED_CURRENCY = [
+    "RUB",
+    "VND",
+    "KRW",
+    "CLP",
+    "PEN",
+    "COP",
+    "CRC"
+]
 
 
 class Market:
-    url = 'http://steamcommunity.com/market/priceoverview'
+    URI = "http://steamcommunity.com/market/priceoverview"
 
-    def __init__(self, currency: (str, int) = 1):
+    def __init__(self, currency = ESteamCurrency.USD):
+        """Sets the currency to be outputted.
+
+        :param currency: Currency used for prices. 
+        :type currency: :class:`ESteamCurrency`, :class:`int`, :class:`str`
         """
-        Sets the currency to be outputted.
-        :param currency: 1, 'USD' or leave empty for American Dollars. For other currencies take a look at the README.
-        """
 
-        if isinstance(currency, str):
-            currency = currency.upper()
+        if isinstance(currency, ESteamCurrency):
+            self.currency = currency.value
 
-            if currency in [i.name for i in ESteamCurrency]:
-                currency = ESteamCurrency[currency].value
+        elif isinstance(currency, str):
+            self.currency = ESteamCurrency[currency.upper()].value
 
-        if isinstance(currency, int):
-            if currency > 32 or currency < 1:
-                currency = 1
+        elif isinstance(currency, int):
+            self.currency = ESteamCurrency(currency).value
 
         else:
-            currency = 1
+            self.currency = 1
 
-        self.currency = currency
 
-    def get_price(self, name: str, app_id: int) -> dict:
+    def get_overview(self, name: str, app_id) -> dict:
         """
-        Gets the price(s) and volume of an item.
+        Gets the prices and volume of an item.
+
         :param name: The name of the item how it appears on the Steam Community Market.
-        :param app_id: The AppID of the item.
+        :type name: :class:`str`
+        :param app_id: The AppID of the game the item is from.
+        :type app_id: :class:`int`, :class:`AppID`
+        :return: An overview of the item. Overview includes volume and prices.  
+        :rtype: :class:`dict`       
+
+        .. versionchanged:: 1.2.0
+        .. versionadded:: 1.0.0
         """
 
         if not isinstance(name, str):
-            raise TypeError('name must be str')
-
-        if not isinstance(app_id, int):
-            raise TypeError('app_id must be int')
-
+            raise TypeError(f"name must be str not {type(name)}")
+        
+        if isinstance(app_id, AppID):
+            app_id = app_id.value
+        
+        elif isinstance(app_id, int):
+            app_id = app_id
+        
+        else:
+            raise TypeError(f"app_id must be int or AppID not {type(app_id)}")
+        
         if self.has_invalid_name(name):
             name = self.fix_name(name)
 
-        payload = {'appid': app_id, 'market_hash_name': name,
-                   'currency': self.currency}
+        payload = {"appid": app_id, "market_hash_name": name, "currency": self.currency}
+        return request(self.URI, payload)
 
-        return request(self.url, payload)
 
-    def get_prices(self, names: list, app_id: (int, list)) -> dict:
+    def get_overviews(self, names: list, app_id) -> dict:
         """
-        Gets the price(s) and volume of each item in the list. If both are lists, then they need to have the same amount of elements.
-        :param names: A list of item names how each item appears on the Steam Community Market.
-        :param app_id: The AppID of the item(s). Either a list or int. For more information check the example.py file.
+        Gets the overview of each item in the list.
+        
+        :param names: A list of item names how they appear on the Steam Community Market.
+        :type names: :class:`list`
+        :param app_id: If given a list, it needs to have the same length as the `names`. \
+            If given :class:`int` or :class:`AppID`, every item in `names` must have this AppID.
+        :type app_id: :class:`list`, :class:`int`, :class:`AppID`
+        :return: An overview of each item. 
+        :rtype: :class:`dict`
+
+        .. versionchanged:: 1.2.0
+        .. versionadded:: 1.0.0
         """
 
         prices = {}
 
-        if not isinstance(names, list):
-            raise TypeError('names must be list')
+        if isinstance(app_id, AppID):
+            app_id = app_id.value
         
         if isinstance(app_id, int):
             for name in names:
-                prices[name] = self.get_price(name, app_id)
-
+                prices[name] = self.get_overview(name, app_id)
+        
         elif isinstance(app_id, list):
             if len(names) == len(app_id):
                 for i in range(len(names)):
                     name = names[i]
-                    prices[name] = self.get_price(name, app_id[i])
+                    prices[name] = self.get_overview(name, app_id[i])
             else:
-                raise IndexError('names and app_id needs to have the same len')
-
+                raise IndexError("names and app_id must have the same length")
+        
+        else:
+            raise TypeError(f"app_id must be int, AppID or list not {type(app_id)}")
+        
         return prices
 
-    def get_prices_from_dict(self, items: dict) -> dict:
+
+    def get_volume(self, name: str, app_id):
         """
-        Gets the price(s) and volume of each item in the list. 
-        :param items: A dict including item names and AppIDs. Check example.py file for more information.
+        Gets the volume of an item.
+
+        :param name: The name of the item how it appears on the Steam Community Market.
+        :type name: :class:`str`
+        :param app_id: The AppID of the game the item is from.
+        :type app_id: :class:`int`, :class:`ESteamCurrency`
+        :return: The volume if success, :class:`None` otherwise.
+        :rtype: :class:`int`, :class:`None`        
+
+        .. versionadded:: 1.2.0
+        """
+
+        item = self.get_overview(name, app_id)
+
+        if "volume" in item:
+            return int(item["volume"].replace(",", ""))
+        return None
+
+
+    def get_prices(self, name: str, app_id):
+        """
+        Gets the lowest and/or median price of an item, if they exist.
+        
+        :param name: The name of the item how it appears on the Steam Community Market.
+        :type name: :class:`str`
+        :param app_id: The AppID of the game the item is from.
+        :type app_id: :class:`int`, :class:`ESteamCurrency`
+        :return: The lowest and/or median price of the item, if suceess. :class: `None` otherwise.
+        :rtype: :class:`dict`, :class:`None` 
+
+        .. versionadded:: 1.2.0
+        """
+
+        item = self.get_overview(name, app_id)
+        prices = {}
+
+        if "lowest_price" in item:
+            prices["lowest_price"] = self.price_to_float(item["lowest_price"])
+
+        if "median_price" in item:
+            prices["median_price"] = self.price_to_float(item["median_price"])
+        
+        if len(prices) > 0:
+            return prices
+        return None
+
+
+    def get_lowest_price(self, name: str, app_id):
+        """
+        Gets the lowest price of an item.
+        
+        :param name: The name of the item how it appears on the Steam Community Market.
+        :type name: :class:`str`
+        :param app_id: The AppID of the game the item is from.
+        :type app_id: :class:`int`, :class:`ESteamCurrency`
+        :return: The lowest price of the item, if suceess. :class: `None` otherwise.
+        :rtype: :class:`float`, :class:`str`, :class:`None` 
+
+        .. versionadded:: 1.2.0  
+        """
+
+        item = self.get_overview(name, app_id)
+
+        if "lowest_price" in item:
+            return self.price_to_float(item["lowest_price"])
+        return None
+
+
+    def get_median_price(self, name: str, app_id):
+        """
+        Gets the median price of an item.
+
+        :param name: The name of the item how it appears on the Steam Community Market.
+        :type name: :class:`str`
+        :param app_id: The AppID of the game the item is from.
+        :type app_id: :class:`int`, :class:`ESteamCurrency`
+        :return: The median price of the item, if suceess. :class: `None` otherwise.
+        :rtype: :class:`float`, :class:`str`, :class:`None`
+
+        .. versionadded:: 1.2.0
+        """
+        item = self.get_overview(name, app_id)
+
+        if "median_price" in item:
+            return self.price_to_float(item["median_price"])
+        return None
+
+
+    def get_overviews_from_dict(self, items: dict) -> dict:
+        """
+        Gets the overview of each item in the :class:`dict`.
+        
+        :param items: A :class:`dict` containg item names and AppIDs. There is an \
+            example on how this :class:`dict` should be constructed in example.py.
+        :type items: :class:`dict`
+        :return: An overview of each item.
+        :rtype: :class:`dict`
+
+        .. versionadded:: 1.1.0
         """
 
         prices = {}
 
         if not isinstance(items, dict):
-            raise TypeError('items must be dict')
+            raise TypeError(f"items must be dict not {type(items)}")
 
         for item in items:
-            prices[item] = self.get_price(item, items[item]['appid'])
+            prices[item] = self.get_overview(item, items[item]['appid'])
         return prices
 
+
+    # Some currencies are not supported because of weird formatting e.g. RUB
+    # EUR "2,01$" -> 2.01 --------------- RUB "163,58 pуб." -> "163,58 pуб."
+    def price_to_float(self, value: str):
+        """
+        Converts a price from :class:`str` to :class:`float`
+
+        :param value: A price
+        :type value: :class:`str`
+        :return: :class:`float` if currency is not in :class:`UNSUPPORTED_CURRENCY`
+        :rtype: :class:`float`, :class:`str`
+        """
+        
+        if ESteamCurrency(self.currency).name in UNSUPPORTED_CURRENCY:
+            return value
+
+        price = ""
+        # Bør ha try except her
+        for char in value.replace(",", "."):
+            if char.isnumeric() or char == ".":
+                price += char
+        
+        try:
+            return float(price)
+        except ValueError:
+            return value
+
     def has_invalid_name(self, name: str) -> bool:
+        """
+        Checks if given item name is invalid.
+
+        :param name: The name of the item how it appears on the Steam Community Market.
+        :type name: :class:`str`
+        :return: :class:`True` if the item name is invalid, :class:`False` otherwise.
+        :rtype: :class:`bool`
+
+        .. versionadded 1.1.0
+        """
+        
         if isinstance(name, str):
             try:
-                return name.index('/') >= 0
+                return name.index("/") >= 0
             except ValueError:
                 return False
-        return False
+        raise TypeError(f"name must be str not {type(name)}")
 
-    def fix_name(self, name: str):
+
+    def fix_name(self, name: str) -> str:
+        """
+        Replaces "/" with "-" and returns the item name.
+
+        :param name: The name of the item how it appears on the Steam Community Market.
+        :type name: :class:`str`
+        :return: The correct item name.
+        :rtype: :class:`str`
+
+        .. versionadded 1.1.0
+        """
+
         if isinstance(name, str):
-            return name.replace('/', '-')
-        return False
+            return name.replace("/", "-")
+        raise TypeError(f"name must be str not {type(name)}")

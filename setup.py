@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 import re
 
 
-with open("README.md", "r") as f:
+with open("README.rst", "r") as f:
     long_description = f.read()
 
 

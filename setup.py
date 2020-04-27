@@ -10,10 +10,6 @@ with open("steam_community_market/__init__.py") as f:
     version = re.search(r"""^__version__\s*=\s*['"]([^\'"]*)['"]""", f.read(), re.MULTILINE).group(1)
 
 
-with open("requirements.txt") as f:
-    requirements = f.read().splitlines()
-
-
 setup(
     name="steam_community_market",
     version=version,
@@ -31,6 +27,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=requirements,
+    install_requires=["requests"],
     python_requires='>=3.6',
 )

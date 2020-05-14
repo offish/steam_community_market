@@ -21,7 +21,7 @@ UNSUPPORTED_CURRENCY
     "COP",
     "CRC"
 
-These currencies are are supported, but won't 
+These currencies are supported, but won't 
 be converted to :class:`float` due to "weird" formatting.
 
 .. code:: python

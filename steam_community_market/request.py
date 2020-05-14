@@ -8,4 +8,4 @@ def request(url: str, payload: dict) -> dict:
     try:
         return json.loads(r.text)
     except ValueError:
-        return {'success': False, 'status_code': r.status_code, 'text': r.text}
+        return {"success": False, "status_code": r.status_code, "text": r.text}

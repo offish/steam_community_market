@@ -45,10 +45,10 @@ class Market:
         :type name: :class:`str`
         :param app_id: The AppID of the game the item is from.
         :type app_id: :class:`int`, :class:`AppID`
-        :return: An overview of the item. Overview includes volume and prices.  
-        :rtype: :class:`dict`       
+        :return: An overview of the item on success, :class:`None` otherwise. Overview includes both volume and prices.
+        :rtype: Optional[:class:`dict`]
 
-        .. versionchanged:: 1.2.0
+        .. versionchanged:: 1.2.2
         .. versionadded:: 1.0.0
         """
 
@@ -68,7 +68,11 @@ class Market:
             name = self.fix_name(name)
 
         payload = {"appid": app_id, "market_hash_name": name, "currency": self.currency}
-        return request(self.URI, payload)
+        response = request(self.URI, payload)
+
+        if response["success"] == True:
+            return response
+        return None
 
 
     def get_overviews(self, names: list, app_id) -> dict:
@@ -119,13 +123,16 @@ class Market:
         :param app_id: The AppID of the game the item is from.
         :type app_id: :class:`int`, :class:`ESteamCurrency`
         :return: The volume if success, :class:`None` otherwise.
-        :rtype: :class:`int`, :class:`None`        
+        :rtype: Optional[:class:`int`]
 
         .. versionadded:: 1.2.0
         """
 
         item = self.get_overview(name, app_id)
 
+        if item == None:
+            return None
+  
         if "volume" in item:
             return int(item["volume"].replace(",", ""))
         return None
@@ -140,13 +147,16 @@ class Market:
         :param app_id: The AppID of the game the item is from.
         :type app_id: :class:`int`, :class:`ESteamCurrency`
         :return: The lowest and/or median price of the item, if suceess. :class: `None` otherwise.
-        :rtype: :class:`dict`, :class:`None` 
+        :rtype: Optional[:class:`dict`]
 
         .. versionadded:: 1.2.0
         """
 
         item = self.get_overview(name, app_id)
         prices = {}
+
+        if item == None:
+            return None
 
         if "lowest_price" in item:
             prices["lowest_price"] = self.price_to_float(item["lowest_price"])
@@ -168,12 +178,15 @@ class Market:
         :param app_id: The AppID of the game the item is from.
         :type app_id: :class:`int`, :class:`ESteamCurrency`
         :return: The lowest price of the item, if suceess. :class: `None` otherwise.
-        :rtype: :class:`float`, :class:`str`, :class:`None` 
+        :rtype: Optional[Union[:class:`float`, :class:`str`]]
 
         .. versionadded:: 1.2.0  
         """
 
         item = self.get_overview(name, app_id)
+
+        if item == None:
+            return None
 
         if "lowest_price" in item:
             return self.price_to_float(item["lowest_price"])
@@ -189,11 +202,14 @@ class Market:
         :param app_id: The AppID of the game the item is from.
         :type app_id: :class:`int`, :class:`ESteamCurrency`
         :return: The median price of the item, if suceess. :class: `None` otherwise.
-        :rtype: :class:`float`, :class:`str`, :class:`None`
+        :rtype: Optional[Union[:class:`float`, :class:`str`]]
 
         .. versionadded:: 1.2.0
         """
         item = self.get_overview(name, app_id)
+
+        if item == None:
+            return None
 
         if "median_price" in item:
             return self.price_to_float(item["median_price"])
@@ -205,7 +221,7 @@ class Market:
         Gets the overview of each item in the :class:`dict`.
         
         :param items: A :class:`dict` containg item names and AppIDs. There is an \
-            example on how this :class:`dict` should be constructed in example.py.
+            example on how this :class:`dict` should be constructed in ``example.py``.
         :type items: :class:`dict`
         :return: An overview of each item.
         :rtype: :class:`dict`
@@ -219,12 +235,10 @@ class Market:
             raise TypeError(f"items must be dict not {type(items)}")
 
         for item in items:
-            prices[item] = self.get_overview(item, items[item]['appid'])
+            prices[item] = self.get_overview(item, items[item]["appid"])
         return prices
 
 
-    # Some currencies are not supported because of weird formatting e.g. RUB
-    # EUR "2,01$" -> 2.01 --------------- RUB "163,58 pуб." -> "163,58 pуб."
     def price_to_float(self, value: str):
         """
         Converts a price from :class:`str` to :class:`float`
@@ -232,18 +246,18 @@ class Market:
         :param value: A price
         :type value: :class:`str`
         :return: :class:`float` if currency is not in :class:`UNSUPPORTED_CURRENCY`
-        :rtype: :class:`float`, :class:`str`
+        :rtype: Optional[Union[:class:`float`, :class:`str`]]
         """
         
         if ESteamCurrency(self.currency).name in UNSUPPORTED_CURRENCY:
             return value
 
         price = ""
-        # Bør ha try except her
+
         for char in value.replace(",", "."):
             if char.isnumeric() or char == ".":
                 price += char
-        
+
         try:
             return float(price)
         except ValueError:

@@ -36,7 +36,7 @@ class ESteamCurrency(enum.IntEnum):
     AED = 32
     ARS = 34
     ILS = 35
-    # BYN = 36 not supported
+    # 36 not supported
     KZT = 37
     KWD = 38
     QAR = 39

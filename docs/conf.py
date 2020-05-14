@@ -44,6 +44,10 @@ extensions = [
     'exception_hierarchy'
 ]
 
+sphinx_mapping = {
+    'py': ('https://docs.python.org/3', None)
+}
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -79,6 +83,8 @@ html_theme_options = {
     'fixed_sidebar': 'true',
     'donate_url': 'https://steamcommunity.com/tradeoffer/new/?partner=293059984&token=0-l_idZR',
 }
+
+
 
 # Skal endres senere.
 """

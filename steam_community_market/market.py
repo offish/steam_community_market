@@ -48,7 +48,7 @@ class Market:
         :return: An overview of the item on success, :class:`None` otherwise. Overview includes both volume and prices.
         :rtype: Optional[:class:`dict`]
 
-        .. versionchanged:: 1.2.2
+        .. versionchanged:: 1.2.3
         .. versionadded:: 1.0.0
         """
 
@@ -70,9 +70,9 @@ class Market:
         payload = {"appid": app_id, "market_hash_name": name, "currency": self.currency}
         response = request(self.URI, payload)
 
-        if response["success"] == True:
-            return response
-        return None
+        if not response or response["success"] == False:
+            return None
+        return response
 
 
     def get_overviews(self, names: list, app_id) -> dict:

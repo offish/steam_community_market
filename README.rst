@@ -125,4 +125,4 @@ SOFTWARE.
 
 .. |donate| image:: https://img.shields.io/badge/donate-paypal-blue.svg
     :target: https://www.paypal.me/0ffish
-    :alt: Done via PayPal
+    :alt: Donate via PayPal

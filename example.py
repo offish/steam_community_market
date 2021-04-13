@@ -44,7 +44,7 @@ items = {
     },
     "AK-47 | Redline (Field-Tested)": {
         "appid": 730
-    } # Do not add a comma at the end of the last entry.
+    }
 }
 
 print(market.get_overviews_from_dict(items))

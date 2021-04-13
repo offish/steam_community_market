@@ -32,7 +32,7 @@ Usage
 
     market = Market("USD")
 
-    item = "AK-47 | Redline (Field Tested)"
+    item = "AK-47 | Redline (Field-Tested)"
 
     market.get_lowest_price(item, AppID.CSGO)
     14.98

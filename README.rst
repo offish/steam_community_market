@@ -19,7 +19,7 @@ Install and update using `pip`_:
 
 .. code-block:: text
 
-    pip install steam_community_market
+    pip install --upgrade steam_community_market
 
 .. _pip: https://pip.pypa.io/en/stable/quickstart/
 

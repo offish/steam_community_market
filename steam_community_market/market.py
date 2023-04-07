@@ -37,7 +37,7 @@ class Market:
         :return: A supported currency.
         :rtype: :class:`ESteamSupportedCurrency`
 
-        .. versionadded: 1.2.4
+        .. versionadded:: 1.2.4
         """
 
         if isinstance(currency, int):
@@ -60,9 +60,9 @@ class Market:
         :return: An overview of the item on success, :class:`None` otherwise. Overview includes both volume and prices.
         :rtype: :class:`dict`, :class:`None`
 
-        .. versionchanged: 1.2.4
-        .. versionchanged: 1.2.3
-        .. versionadded: 1.0.0
+        .. versionchanged:: 1.2.4
+        .. versionchanged:: 1.2.3
+        .. versionadded:: 1.0.0
         """
 
         if not isinstance(name, str):
@@ -95,9 +95,9 @@ class Market:
         :return: An overview of each item. 
         :rtype: :class:`dict`
 
-        .. versionchanged: 1.2.4
-        .. versionchanged: 1.2.0
-        .. versionadded: 1.0.0
+        .. versionchanged:: 1.2.4
+        .. versionchanged:: 1.2.0
+        .. versionadded:: 1.0.0
         """
 
         prices = {}
@@ -129,7 +129,7 @@ class Market:
         :return: The value of the AppID.
         :rtype: :class:`int`
 
-        .. versionadded: 1.2.4
+        .. versionadded:: 1.2.4
         """
 
         if isinstance(app_id, AppID):
@@ -155,8 +155,8 @@ class Market:
         :return: An overview of each item.
         :rtype: :class:`dict`
 
-        .. versionchanged: 1.2.4
-        .. versionadded: 1.1.0
+        .. versionchanged:: 1.2.4
+        .. versionadded:: 1.1.0
         """
 
         if not isinstance(items, dict):
@@ -177,8 +177,8 @@ class Market:
         :return: The lowest and/or median price of the item, if suceess. :class: `None` otherwise.
         :rtype: :class:`dict[str, float | None]`, :class:`None`
 
-        .. versionchanged: 1.2.4
-        .. versionadded: 1.2.0
+        .. versionchanged:: 1.2.4
+        .. versionadded:: 1.2.0
         """
 
         item = self.get_overview(name, app_id)
@@ -206,8 +206,8 @@ class Market:
         :return: The lowest price of the item, if suceess. :class: `None` otherwise.
         :rtype: :class:`float`, :class:`None`
 
-        .. versionchanged: 1.2.4
-        .. versionadded: 1.2.0
+        .. versionchanged:: 1.2.4
+        .. versionadded:: 1.2.0
         """
 
         return self.get_price(name, app_id, "lowest_price")
@@ -223,8 +223,8 @@ class Market:
         :return: The median price of the item, if suceess. :class: `None` otherwise.
         :rtype: :class:`float`, :class:`None`
 
-        .. versionchanged: 1.2.4
-        .. versionadded: 1.2.0
+        .. versionchanged:: 1.2.4
+        .. versionadded:: 1.2.0
         """
 
         return self.get_price(name, app_id, "median_price")
@@ -242,7 +242,7 @@ class Market:
         :return: The price of the item, if suceess. :class: `None` otherwise.
         :rtype: :class:`float`, :class:`None`
 
-        .. versionadded: 1.2.4
+        .. versionadded:: 1.2.4
         """
 
         item = self.get_overview(name, app_id)
@@ -262,8 +262,8 @@ class Market:
         :return: The volume if success, :class:`None` otherwise.
         :rtype: :class:`int`, :class:`None`
 
-        .. versionchanged: 1.2.4
-        .. versionadded: 1.2.0
+        .. versionchanged:: 1.2.4
+        .. versionadded:: 1.2.0
         """
 
         item = self.get_overview(name, app_id)
@@ -281,7 +281,7 @@ class Market:
         :return: :class:`True` if the item name is invalid, :class:`False` otherwise.
         :rtype: :class:`bool`
 
-        .. versionadded: 1.1.0
+        .. versionadded:: 1.1.0
         """
 
         if isinstance(name, str):
@@ -301,7 +301,7 @@ class Market:
         :return: The correct item name.
         :rtype: :class:`str`
 
-        .. versionadded: 1.1.0
+        .. versionadded:: 1.1.0
         """
 
         if isinstance(name, str):
@@ -318,7 +318,7 @@ class Market:
         :return: :class:`float`
         :rtype: :class:`float`, :class:`None`
 
-        .. versionchanged: 1.2.4
+        .. versionchanged:: 1.2.4
         """
 
         if not (match := re.search(r"\d{1,3}(?:[\.,]\d{1,3})*([\.,])\d{2}", value)):

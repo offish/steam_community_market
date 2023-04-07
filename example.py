@@ -1,13 +1,18 @@
 from steam_community_market import Market, ESteamCurrency, AppID
 
 
-market = Market(ESteamCurrency.NOK) # Could either be: 'NOK', 'nok' or 9.
+MANN_CO_SUPPLY_CRATE_KEY = (
+    "Mann Co. Supply Crate Key"  # Because we love "Mann Co. Supply Crate Key" <3
+)
+
+
+market = Market(ESteamCurrency.NOK)  # Could either be: 'NOK', 'nok' or 9.
 # For USD; leave it empty or use ESteamCurrency.USD, 'USD', 'usd' or 1.
 
 
 # get_overview
 # Example using get_overview
-print(market.get_overview("Mann Co. Supply Crate Key", AppID.TF2))
+print(market.get_overview(MANN_CO_SUPPLY_CRATE_KEY, AppID.TF2))
 # {'success': True, 'lowest_price': '23,93 kr', 'volume': '7,608', 'median_price': '23,50 kr'}
 
 # get_lowest_price
@@ -32,21 +37,17 @@ print(market.get_volume("753-Sack of Gems", AppID.STEAM))
 
 # get_prices
 # Example using get_prices
-print(market.get_prices("Mann Co. Supply Crate Key", 440)) # 440 is TF2's AppID
+print(market.get_prices(MANN_CO_SUPPLY_CRATE_KEY, 440))  # 440 is TF2's AppID
 # {'lowest_price': 23.93, 'median_price': 23.5}
 
 
 # get_overviews_from_dict
 # Example using get_overviews_from_dict
 items = {
-    "Mann Co. Supply Crate Key": {
-        "appid": 440
-    },
-    "AK-47 | Redline (Field-Tested)": {
-        "appid": 730
-    }
+    MANN_CO_SUPPLY_CRATE_KEY: {"appid": 440},
+    "AK-47 | Redline (Field-Tested)": {"appid": 730},
 }
 
 print(market.get_overviews_from_dict(items))
-# {'Mann Co. Supply Crate Key': {'success': True, 'lowest_price': '23,93 kr', 'volume': '7,608', 'median_price': '23,50 kr'}, 
+# {'Mann Co. Supply Crate Key': {'success': True, 'lowest_price': '23,93 kr', 'volume': '7,608', 'median_price': '23,50 kr'},
 # 'AK-47 | Redline (Field-Tested)': {'success': True, 'lowest_price': '153,56 kr', 'volume': '890', 'median_price': '155,33 kr'}}

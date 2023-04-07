@@ -10,7 +10,7 @@ from .request import request
 __title__ = "steam_community_market"
 __author__ = "offish"
 __license__ = "MIT"
-__version__ = "1.2.3"
+__version__ = "1.2.4"
 __all__ = [
     "AppID",
     "ESteamCurrency",

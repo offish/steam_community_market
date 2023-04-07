@@ -1,11 +1,14 @@
 import requests
-import json
 
 
 def request(url: str, payload: dict) -> dict:
-    r = requests.get(url, payload)
-
     try:
-        return json.loads(r.text)
-    except ValueError:
-        return {"success": False, "status_code": r.status_code, "text": r.text}
+        response = requests.get(url, params=payload)
+        response.raise_for_status()
+        return response.json()
+    except (requests.exceptions.RequestException, ValueError):
+        return {
+            "success": False,
+            "status_code": response.status_code,
+            "text": response.text,
+        }

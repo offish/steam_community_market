@@ -1,14 +1,17 @@
-from setuptools import setup, find_packages
 import re
+from pathlib import Path
+from setuptools import setup
 
+base_dir = Path(__file__).resolve().parent
+init_file = base_dir / "steam_community_market" / "__init__.py"
+readme_file = base_dir / "README.rst"
 
-with open("README.rst", "r") as f:
-    long_description = f.read()
+with open(init_file, "r") as f:
+    version = re.search(
+        r"^__version__\s*=\s*['\"]([^'\"]*)['\"]", f.read(), re.MULTILINE
+    )[1]
 
-
-with open("steam_community_market/__init__.py") as f:
-    version = re.search(r"""^__version__\s*=\s*['"]([^\'"]*)['"]""", f.read(), re.MULTILINE).group(1)
-
+long_description = readme_file.read_text()
 
 setup(
     name="steam_community_market",
@@ -20,7 +23,7 @@ setup(
     long_description_content_type="text/markdown",
     license="MIT",
     url="https://github.com/offish/steam_community_market",
-    download_url="https://github.com/offish/steam_community_market/tarball/v" + version,
+    download_url=f"https://github.com/offish/steam_community_market/tarball/v{version}",
     packages=["steam_community_market"],
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -28,5 +31,5 @@ setup(
         "Operating System :: OS Independent",
     ],
     install_requires=["requests"],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
 )

@@ -10,6 +10,13 @@ from steam_community_market.request import request
 
 
 class Market:
+    """Get item prices and volumes from the Steam Community Market.
+
+    :param currency: Currency used for prices.
+    :type currency: :class:`int`, :class:`str`, :class:`ESteamCurrency`
+    :raises SteamUnsupportedCurrency: Raised when a currency is not supported by the Steam Community Market anymore.
+    """
+
     URI = "http://steamcommunity.com/market/priceoverview"
 
     def __init__(
@@ -19,6 +26,7 @@ class Market:
 
         :param currency: Currency used for prices.
         :type currency: :class:`int`, :class:`str`, :class:`ESteamCurrency`
+        :raises SteamUnsupportedCurrency: Raised when a currency is not supported by the Steam Community Market anymore.
         """
         if isinstance(currency, ESteamUnsupportedCurrency):
             raise SteamUnsupportedCurrency(currency)
@@ -29,8 +37,7 @@ class Market:
     def _supported_currency(
         currency: int | str | ESteamCurrency,
     ) -> ESteamSupportedCurrency:
-        """
-        Returns a supported currency.
+        """Returns a supported currency.
 
         :param currency: Currency used for prices.
         :type currency: :class:`int`, :class:`str`, :class:`ESteamCurrency`
@@ -50,13 +57,13 @@ class Market:
         return ESteamSupportedCurrency.USD
 
     def get_overview(self, name: str, app_id: int | AppID) -> dict | None:
-        """
-        Gets the prices and volume of an item.
+        """Gets the prices and volume of an item.
 
         :param name: The name of the item how it appears on the Steam Community Market.
         :type name: :class:`str`
         :param app_id: The AppID of the game the item is from.
         :type app_id: :class:`int`, :class:`AppID`
+        :raises TypeError: Raised when `name` is not a string.
         :return: An overview of the item on success, :class:`None` otherwise. Overview includes both volume and prices.
         :rtype: :class:`dict`, :class:`None`
 
@@ -84,14 +91,14 @@ class Market:
     def get_overviews(
         self, names: list[str], app_id: int | list[int, AppID] | AppID
     ) -> dict:
-        """
-        Gets the overview of each item in the list.
+        """Gets the overview of each item in the list.
         
         :param names: A list of item names how they appear on the Steam Community Market.
         :type names: :class:`list[str]`
         :param app_id: If given a list, it needs to have the same length as the `names`. \
             If given :class:`int` or :class:`AppID`, every item in `names` must have this AppID.
         :type app_id: :class:`int`, :class:`list[int, AppID]`, :class:`AppID`
+        :raises IndexError: Raised when `names` and `app_id` have different lengths.
         :return: An overview of each item. 
         :rtype: :class:`dict`
 
@@ -119,13 +126,13 @@ class Market:
     def _app_id_value(
         app_id: int | list[int | AppID] | AppID, support_lists: bool = False
     ) -> int:
-        """
-        Gets the value of the AppID.
+        """Gets the value of the AppID.
 
         :param app_id: The AppID of the game the item is from.
         :type app_id: :class:`int`, list[int | AppID], :class:`AppID`
         :param support_lists: Whether or not to support lists.
         :type support_lists: :class:`bool`
+        :raises TypeError: Raised when `app_id` is not a supported type.
         :return: The value of the AppID.
         :rtype: :class:`int`
 
@@ -146,12 +153,12 @@ class Market:
         )
 
     def get_overviews_from_dict(self, items: dict) -> dict:
-        """
-        Gets the overview of each item in the :class:`dict`.
+        """Gets the overview of each item in the :class:`dict`.
         
         :param items: A :class:`dict` containg item names and AppIDs. There is an \
             example on how this :class:`dict` should be constructed in ``example.py``.
         :type items: :class:`dict`
+        :raises TypeError: Raised when `items` is not a :class:`dict`.
         :return: An overview of each item.
         :rtype: :class:`dict`
 
@@ -167,8 +174,7 @@ class Market:
     def get_prices(
         self, name: str, app_id: int | AppID
     ) -> dict[str, float | None] | None:
-        """
-        Gets the lowest and/or median price of an item, if they exist.
+        """Gets the lowest and/or median price of an item, if they exist.
 
         :param name: The name of the item how it appears on the Steam Community Market.
         :type name: :class:`str`
@@ -196,8 +202,7 @@ class Market:
         return prices or None
 
     def get_lowest_price(self, name: str, app_id: int | AppID) -> float | None:
-        """
-        Gets the lowest price of an item.
+        """Gets the lowest price of an item.
 
         :param name: The name of the item how it appears on the Steam Community Market.
         :type name: :class:`str`
@@ -213,8 +218,7 @@ class Market:
         return self.get_price(name, app_id, "lowest_price")
 
     def get_median_price(self, name: str, app_id: int | AppID) -> float | None:
-        """
-        Gets the median price of an item.
+        """Gets the median price of an item.
 
         :param name: The name of the item how it appears on the Steam Community Market.
         :type name: :class:`str`
@@ -230,8 +234,7 @@ class Market:
         return self.get_price(name, app_id, "median_price")
 
     def get_price(self, name: str, app_id: int | AppID, type: str) -> float | None:
-        """
-        Gets the lowest or median price of an item.
+        """Gets the lowest or median price of an item.
 
         :param name: The name of the item how it appears on the Steam Community Market.
         :type name: :class:`str`
@@ -252,8 +255,7 @@ class Market:
         return self.price_to_float(item[type]) if type in item else None
 
     def get_volume(self, name: str, app_id: int | AppID) -> int | None:
-        """
-        Gets the volume of an item.
+        """Gets the volume of an item.
 
         :param name: The name of the item how it appears on the Steam Community Market.
         :type name: :class:`str`
@@ -273,11 +275,11 @@ class Market:
         return int(item["volume"].replace(",", "")) if "volume" in item else None
 
     def has_invalid_name(self, name: str) -> bool:
-        """
-        Checks if given item name is invalid.
+        """Checks if given item name is invalid.
 
         :param name: The name of the item how it appears on the Steam Community Market.
         :type name: :class:`str`
+        :raises TypeError: If the given name is not a string.
         :return: :class:`True` if the item name is invalid, :class:`False` otherwise.
         :rtype: :class:`bool`
 
@@ -293,11 +295,11 @@ class Market:
         raise TypeError(f'"name" must be "str", not "{type(name)}".')
 
     def fix_name(self, name: str) -> str:
-        """
-        Replaces "/" with "-" and returns the item name.
+        """Replaces "/" with "-" and returns the item name.
 
         :param name: The name of the item how it appears on the Steam Community Market.
         :type name: :class:`str`
+        :raises TypeError: If the given name is not a string.
         :return: The correct item name.
         :rtype: :class:`str`
 
@@ -310,8 +312,7 @@ class Market:
         raise TypeError(f'"name" must be "str", not "{type(name)}".')
 
     def price_to_float(self, value: str) -> float | None:
-        """
-        Converts a price from :class:`str` to :class:`float`
+        """Converts a price from :class:`str` to :class:`float`
 
         :param value: A price
         :type value: :class:`str`

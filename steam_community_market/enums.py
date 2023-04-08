@@ -2,6 +2,12 @@ import enum
 
 
 class ESteamSupportedCurrency(enum.IntEnum):
+    """Supported currencies.
+
+    .. note::
+        This is the supported subset of the currencies supported by Steam.
+    """
+
     #: United States Dollar
     USD = 1
 
@@ -123,6 +129,12 @@ class ESteamSupportedCurrency(enum.IntEnum):
 
 
 class ESteamUnsupportedCurrency(enum.IntEnum):
+    """Unsupported currencies.
+
+    .. note::
+        This is the legacy subset of the currencies "supported" by Steam.
+    """
+
     #: Swedish Krona
     SEK = 33
 
@@ -149,11 +161,19 @@ class ESteamUnsupportedCurrency(enum.IntEnum):
 
 
 class ESteamCurrency(enum.IntEnum):
+    """All currencies supported by Steam.
+
+    .. note::
+        This is the union of the supported and unsupported currencies.
+    """
+
     locals().update(ESteamSupportedCurrency.__members__)
     locals().update(ESteamUnsupportedCurrency.__members__)
 
 
 class AppID(enum.IntEnum):
+    """A short list of Steam apps that have a community market."""
+
     TF2 = 440
     DOTA2 = 570
     CSGO = 730

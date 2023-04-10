@@ -1,21 +1,23 @@
 """
-steam_community_market
+steam-community-market
 ======================
-Get item prices and volumes from the Steam Community Market using Python 3
+A synchronous Python read-only wrapper for the Steam Community Market API.
 """
-from .enums import AppID, ESteamCurrency
-from .exceptions import SteamUnsupportedCurrency
+from .currencies import SteamCurrency, SteamLegacyCurrency
+from .enums import AppID
+from .exceptions import InvalidCurrencyException, LegacyCurrencyException
 from .market import Market
-from .request import request
 
-__title__ = "steam_community_market"
-__author__ = "offish"
-__license__ = "MIT"
-__version__ = "1.2.4"
+__version__ = "1.3.0"
 __all__ = [
+    # Currencies
+    "SteamCurrency",
+    "SteamLegacyCurrency",
+    # Enums
     "AppID",
-    "ESteamCurrency",
+    # Exceptions
+    "InvalidCurrencyException",
+    "LegacyCurrencyException",
+    # Market
     "Market",
-    "request",
-    "SteamUnsupportedCurrency",
 ]

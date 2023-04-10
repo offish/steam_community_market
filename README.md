@@ -52,13 +52,13 @@ pip install -U steam-community-market
 To use the library, first import it in your Python script:
 
 ```python
-import steam_community_market
+from steam_community_market import *
 ```
 
 Then, create an instance of the `Market` class specifying the currency you want to use:
 
 ```python
-market = steam_community_market.Market(currency=SteamCurrency.USD)
+market = Market(currency=SteamCurrency.USD)
 ```
 
 Now you can use the various functions provided by the library to interact with the Steam Community Market API.
@@ -89,10 +89,10 @@ print(
 ```
 
 ```python
-# get_overviews (1)
+# get_overviews
 market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"]
 print(
-    "get_overviews (1):",
+    "get_overviews:",
     json.dumps(
         market.get_overviews(AppID.TF2, market_hash_names),
         indent=2,
@@ -101,7 +101,7 @@ print(
     sep=os.linesep,
     end=os.linesep * 2,
 )
-# get_overviews (1):
+# get_overviews:
 # {
 #   "Mann Co. Supply Crate Key": {
 #     "success": true,
@@ -125,95 +125,6 @@ print(
 ```
 
 ```python
-# get_overviews (2)
-app_ids = [AppID.TF2, 730, AppID.RUST]
-market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "AK-47 | Redline (Field-Tested)", "Wood"]
-print(
-    "get_overviews (2):",
-    json.dumps(
-        market.get_overviews(app_ids, market_hash_names),
-        indent=2,
-        ensure_ascii=False,
-    ),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
-# get_overviews (2):
-# {
-#   "Mann Co. Supply Crate Key": {
-#     "success": true,
-#     "lowest_price": "2,23€",
-#     "volume": "18,015",
-#     "median_price": "2,25€"
-#   },
-#   "AK-47 | Redline (Field-Tested)": {
-#     "success": true,
-#     "lowest_price": "23,77€",
-#     "volume": "447",
-#     "median_price": "23,03€"
-#   },
-#   "Wood": {
-#     "success": true,
-#     "lowest_price": "0,35€",
-#     "volume": "1,329",
-#     "median_price": "0,34€"
-#   }
-# }
-```
-
-```python
-# get_overviews_from_dict
-market_hash_names = {
-    AppID.TF2: [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"],
-    730: ["AK-47 | Redline (Field-Tested)", "M4A4 | Howl (Field-Tested)"],
-    252490: ["Weapon Stock", "Weapon Grip"],
-}
-
-print(
-    "get_overviews_from_dict:",
-    json.dumps(
-        market.get_overviews_from_dict(market_hash_names), indent=2, ensure_ascii=False
-    ),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
-# 730 - CS:GO's App ID
-# 252490 - Rust's App ID
-# get_overviews_from_dict:
-# {
-#   "Mann Co. Supply Crate Key": {
-#     "success": true,
-#     "lowest_price": "2,25€",
-#     "volume": "18,015",
-#     "median_price": "2,25€"
-#   },
-#   "Name Tag": {
-#     "success": true,
-#     "lowest_price": "0,38€",
-#     "volume": "1,114",
-#     "median_price": "0,38€"
-#   },
-#   "The Festivizer": {
-#     "success": true,
-#     "lowest_price": "1,26€",
-#     "volume": "510",
-#     "median_price": "1,25€"
-#   },
-#   "AK-47 | Redline (Field-Tested)": {
-#     "success": true,
-#     "lowest_price": "23,--€",
-#     "volume": "447",
-#     "median_price": "23,03€"
-#   },
-#   "M4A4 | Howl (Field-Tested)": {
-#     "success": true
-#   },
-#   "Weapon Stock": null,
-#   "Weapon Grip": null
-# }
-```
-
-```python
 # get_lowest_price (get_price)
 print(
     "get_lowest_price:",
@@ -233,28 +144,6 @@ print(
 #
 # get_price (lowest_price):
 # 6.33
-```
-
-```python
-# get_median_price (get_price)
-print(
-    "get_median_price:",
-    market.get_median_price(252490, "No Mercy AK47"),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
-print(
-    "get_price (median_price):",
-    market.get_price(AppID.RUST, "Weapon Barrel", "median_price"),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
-# 252490 - Rust's App ID
-# get_median_price:
-# 6.33
-#
-# get_price (median_price):
-# 12.26
 ```
 
 ```python
@@ -289,7 +178,7 @@ print(
 # 4982
 ```
 
-For more examples and detailed explanations, please refer to the [official documentation](https://steam-community-market.readthedocs.io/).
+For more examples and detailed explanations, please refer to the [official documentation](https://steam-community-market.readthedocs.io/) and the [examples module](https://github.com/offish/steam_community_market/blob/master/example.py).
 
 ## Support
 

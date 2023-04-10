@@ -1,13 +1,12 @@
-from steam_community_market import Market, ESteamCurrency, AppID
+from steam_community_market import Market, SteamCurrency, AppID
 
 
 MANN_CO_SUPPLY_CRATE_KEY = (
     "Mann Co. Supply Crate Key"  # Because we love "Mann Co. Supply Crate Key" <3
 )
 
-
-market = Market(ESteamCurrency.NOK)  # Could either be: 'NOK', 'nok' or 9.
-# For USD; leave it empty or use ESteamCurrency.USD, 'USD', 'usd' or 1.
+market = Market(SteamCurrency.NOK)  # Could either be: 'NOK', 'nok' or 9.
+# For USD; leave it empty or use SteamCurrency.USD, 'USD', 'usd' or 1.
 
 
 # get_overview
@@ -44,8 +43,8 @@ print(market.get_prices(MANN_CO_SUPPLY_CRATE_KEY, 440))  # 440 is TF2's AppID
 # get_overviews_from_dict
 # Example using get_overviews_from_dict
 items = {
-    MANN_CO_SUPPLY_CRATE_KEY: {"appid": 440},
-    "AK-47 | Redline (Field-Tested)": {"appid": 730},
+    MANN_CO_SUPPLY_CRATE_KEY: AppID.TF2,
+    "AK-47 | Redline (Field-Tested)": 730,
 }
 
 print(market.get_overviews_from_dict(items))

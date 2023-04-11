@@ -5,10 +5,10 @@ A synchronous Python read-only wrapper for the Steam Community Market API.
 [![Version](https://img.shields.io/pypi/v/steam-community-market?color=0067a3&label=Version&logo=pypi&logoColor=0067a3)](https://pypi.org/project/steam-community-market/)
 [![Supported Versions](https://img.shields.io/pypi/pyversions/steam-community-market?color=0067a3&label=Supported%20Versions&logo=pypi&logoColor=0067a3)](https://pypi.org/project/steam-community-market/)
 [![License](https://img.shields.io/pypi/l/steam-community-market?color=0067a3&label=License&logo=pypi&logoColor=0067a3)](https://github.com/offish/steam-community-market/blob/master/LICENSE)
+[![Documentation Status](https://img.shields.io/readthedocs/steam-community-market/latest?label=RTD&logo=read-the-docs&logoColor=ffffff)](https://steam-community-market.readthedocs.io/en/latest/)
 [![GitHub Issues](https://img.shields.io/github/issues-raw/offish/steam_community_market?color=ffffff&label=Open%20Issues&logo=github)](https://github.com/offish/steam_community_market/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/offish/steam_community_market?color=ffffff&label=Stargazers&logo=github)](https://github.com/offish/steam_community_market/stargazers)
 [![Discord](https://img.shields.io/discord/467040686982692865?color=7289da&label=Discord&logo=discord&logoColor=7289da)](https://discord.gg/t8nHSvA)
-[![Documentation Status](https://readthedocs.org/projects/steam-community-market/badge/?version=latest)](https://steam-community-market.readthedocs.io/en/latest/?badge=latest)
 
 ## Table of Contents
 

@@ -2,8 +2,8 @@
 
 A synchronous Python read-only wrapper for the Steam Community Market API.
 
-[![Version](https://img.shields.io/pypi/pyversions/steam-community-market?color=0067a3&label=Supported%20Versions&logo=pypi&logoColor=0067a3)](https://pypi.org/project/steam-community-market/)
-[![Supported Versions](https://img.shields.io/pypi/v/steam-community-market?color=0067a3&label=Version&logo=pypi&logoColor=0067a3)](https://pypi.org/project/steam-community-market/)
+[![Version](https://img.shields.io/pypi/v/steam-community-market?color=0067a3&label=Version&logo=pypi&logoColor=0067a3)](https://pypi.org/project/steam-community-market/)
+[![Supported Versions](https://img.shields.io/pypi/pyversions/steam-community-market?color=0067a3&label=Supported%20Versions&logo=pypi&logoColor=0067a3)](https://pypi.org/project/steam-community-market/)
 [![License](https://img.shields.io/pypi/l/steam-community-market?color=0067a3&label=License&logo=pypi&logoColor=0067a3)](https://github.com/offish/steam-community-market/blob/master/LICENSE)
 [![GitHub Issues](https://img.shields.io/github/issues-raw/offish/steam_community_market?color=ffffff&label=Open%20Issues&logo=github)](https://github.com/offish/steam_community_market/issues)
 [![GitHub Stars](https://img.shields.io/github/stars/offish/steam_community_market?color=ffffff&label=Stargazers&logo=github)](https://github.com/offish/steam_community_market/stargazers)
@@ -65,10 +65,21 @@ Now you can use the various functions provided by the library to interact with t
 
 ## Examples
 
-Here are some examples of how to use the `steam-community-market` library:
+Below you can find some examples on how to use different methods of the `steam-community-market` library.
+
+First, let's import the required libraries for beautifully and correctly print our outputs, and define an item name constant:
 
 ```python
-# get_overview
+import json
+import os
+
+# Because we love "Mann Co. Supply Crate Key" <3
+MANN_CO_SUPPLY_CRATE_KEY = "Mann Co. Supply Crate Key"
+```
+
+### Example: `get_overview`
+
+```python
 print(
     "get_overview:",
     json.dumps(
@@ -77,7 +88,6 @@ print(
         ensure_ascii=False,
     ),
     sep=os.linesep,
-    end=os.linesep * 2,
 )
 # get_overview:
 # {
@@ -88,8 +98,9 @@ print(
 # }
 ```
 
+### Example: `get_overviews`
+
 ```python
-# get_overviews
 market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"]
 print(
     "get_overviews:",
@@ -99,7 +110,6 @@ print(
         ensure_ascii=False,
     ),
     sep=os.linesep,
-    end=os.linesep * 2,
 )
 # get_overviews:
 # {
@@ -124,8 +134,9 @@ print(
 # }
 ```
 
+### Example: `get_lowest_price` / `get_price(lowest_price)`
+
 ```python
-# get_lowest_price (get_price)
 print(
     "get_lowest_price:",
     market.get_lowest_price(AppID.CSGO, "Weapon Barrel"),
@@ -136,7 +147,6 @@ print(
     "get_price (lowest_price):",
     market.get_price(252490, "No Mercy AK47", "lowest_price"),
     sep=os.linesep,
-    end=os.linesep * 2,
 )
 # 252490 - Rust's App ID
 # get_lowest_price:
@@ -146,15 +156,18 @@ print(
 # 6.33
 ```
 
+### Example: `get_prices`
+
 ```python
 # get_prices
 print(
     "get_prices:",
     json.dumps(
-        market.get_prices(440, MANN_CO_SUPPLY_CRATE_KEY), indent=2, ensure_ascii=False
+        market.get_prices(440, MANN_CO_SUPPLY_CRATE_KEY),
+        indent=2,
+        ensure_ascii=False
     ),
     sep=os.linesep,
-    end=os.linesep * 2,
 )
 # 440 - Team Fortress 2's App ID
 # get_prices:
@@ -164,6 +177,8 @@ print(
 # }
 ```
 
+### Example: `get_volume`
+
 ```python
 # get_volume
 # Getting information about "Steam" items is kind of weird, you need to look at its URL.
@@ -172,7 +187,6 @@ print(
     "get_volume:",
     market.get_volume(AppID.STEAM, "753-Sack of Gems"),
     sep=os.linesep,
-    end=os.linesep * 2,
 )
 # get_volume:
 # 4982
@@ -194,13 +208,17 @@ If you find this library useful and would like to support the author and maintai
 
 - Author - @offish
 
-  [![Bitcoin Address](https://img.shields.io/static/v1?color=f2a900&label=Address&logo=bitcoin&message=bc1qg275cltpez2dcedv2qucrtjxyhq4xurykstldk&style=flat)](bitcoin:bc1qg275cltpez2dcedv2qucrtjxyhq4xurykstldk)
   [![Steam Trade](https://img.shields.io/static/v1?color=2a475e&label=Steam&logo=steam&message=Trade&style=flat)](https://steamcommunity.com/tradeoffer/new/?partner=293059984&token=0-l_idZR)
+
+  - Bitcoin: `bc1qg275cltpez2dcedv2qucrtjxyhq4xurykstldk`
 
 - Maintainer - @RoachxD
 
-  [![Bitcoin Address](https://img.shields.io/static/v1?color=f2a900&label=Address&logo=bitcoin&message=bc1qmyyratw3zaf6jj7azrvyr8vqmflpvhwzcf2zp7&style=flat)](bitcoin:bc1qmyyratw3zaf6jj7azrvyr8vqmflpvhwzcf2zp7)
-  [![Ko-fi](https://img.shields.io/static/v1?color=ff5e5b&label=Coffee&logo=ko-fi&message=Buy&style=flat)](https://ko-fi.com/roachxd)
+  [![Buy Me A Coffee](https://img.shields.io/static/v1?color=ffdd00&label=Coffee&logo=buy-me-a-coffee&message=Provide&style=flat)](https://www.buymeacoffee.com/roach)
+  [![Ko-fi](https://img.shields.io/static/v1?color=ff5e5b&label=Ko-fi&logo=ko-fi&message=Provide&style=flat)](https://ko-fi.com/roachxd)
+
+  - Bitcoin: `bc1qmyyratw3zaf6jj7azrvyr8vqmflpvhwzcf2zp7`
+  - Ethereum: `0x8Ce07EA13A79bd40FeC8eEbC51BE5F2c69631031`
 
 ## License
 

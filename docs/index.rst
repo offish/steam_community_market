@@ -3,23 +3,67 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-steam-community-market's documentation
+steam-community-market
 ======================================
 
+`steam-community-market`_ is a Python_ library that provides a simple and efficient way to interact with the `Steam Community Market`_ API. It is designed to be easy to use and provides support for `Python 3.9`_ and above.
 
+.. image:: https://img.shields.io/pypi/pyversions/steam-community-market?color=0067a3&label=Supported%20Versions&logo=pypi&logoColor=0067a3
+    :target: https://pypi.org/project/steam-community-market/
+.. image:: https://img.shields.io/pypi/dm/steam-community-market?color=0067a3&label=Downloads&logo=pypi&logoColor=0067a3
+    :target: https://pypi.org/project/steam-community-market/
+.. image:: https://img.shields.io/pypi/l/steam-community-market?color=0067a3&label=License&logo=pypi&logoColor=0067a3
+    :target: https://pypi.org/project/steam-community-market/
+.. image:: https://img.shields.io/github/issues-raw/offish/steam_community_market?color=ffffff&label=Open%20Issues&logo=github
+    :target: https://github.com/offish/steam_community_market/issues
+.. image:: https://img.shields.io/github/stars/offish/steam_community_market?color=ffffff&label=Stargazers&logo=github
+    :target: https://github.com/offish/steam_community_market/stargazers
+.. image:: https://img.shields.io/discord/467040686982692865?color=7289da&label=Discord&logo=discord&logoColor=7289da
+    :target: https://discord.gg/t8nHSvA
+
+Using this library
+------------------
+
+:doc:`Installation <pages/guidelines/installation>`
+    How to install the library and integrate it into your project.
+
+Class Documentation
+-------------------
+
+:doc:`Market <pages/classes/market>`
+    The main class for interacting with the `Steam Community Market`_ API.
+
+:doc:`Currencies <pages/classes/currencies>`
+    A namespace containing all of the currencies used by the library.
+
+:doc:`Enums <pages/classes/enums>`
+    A class containing all of the enums used by the library.
+
+:doc:`Exceptions <pages/classes/exceptions>`
+    A class containing all of the exceptions used by the library.
+
+.. Links
+
+.. _steam-community-market: https://github.com/offish/steam_community_market/
+.. _Python: https://www.python.org/
+.. _Steam Community Market: https://steamcommunity.com/market/
+.. _Python 3.9: https://docs.python.org/3.9/
+
+.. Hidden TOCs
 
 .. toctree::
+    :caption: Library Guidelines
     :maxdepth: 2
-    :caption: Contents:
+    :hidden:
 
-    pages/market
-    pages/enums
+    pages/guidelines/installation
 
+.. toctree::
+    :caption: Classes Documentation
+    :maxdepth: 2
+    :hidden:
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`search`
-
-
+    pages/classes/market
+    pages/classes/currencies
+    pages/classes/enums
+    pages/classes/exceptions

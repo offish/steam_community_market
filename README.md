@@ -137,20 +137,30 @@ print(
 ### Example: `get_lowest_price` / `get_price(lowest_price)`
 
 ```python
-print(
-    "get_lowest_price:",
-    market.get_lowest_price(AppID.CSGO, "Weapon Barrel"),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
+try:
+    print(
+        "get_lowest_price:",
+        market.get_lowest_price(AppID.CSGO, "Weapon Barrel"),
+        sep=os.linesep,
+        end=os.linesep * 2,
+    )
+except InvalidItemOrAppIDException as e:
+    print(
+        "[InvalidItemOrAppIDException] get_lowest_price:",
+        e,
+        sep=os.linesep,
+        end=os.linesep * 2,
+    )
+
 print(
     "get_price (lowest_price):",
     market.get_price(252490, "No Mercy AK47", "lowest_price"),
     sep=os.linesep,
+    end=os.linesep * 2,
 )
 # 252490 - Rust's App ID
-# get_lowest_price:
-# 12.26
+# [InvalidItemOrAppIDException] get_lowest_price:
+# Item "Weapon Barrel" with app ID "730" is considered invalid by the Steam Community Market.
 #
 # get_price (lowest_price):
 # 6.33

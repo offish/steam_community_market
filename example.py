@@ -1,7 +1,13 @@
 import json
 import os
 
-from steam_community_market import Market, SteamCurrency, AppID
+from steam_community_market import (
+    AppID,
+    InvalidItemOrAppIDException,
+    Market,
+    SteamCurrency,
+)
+
 
 # Because we love "Mann Co. Supply Crate Key" <3
 MANN_CO_SUPPLY_CRATE_KEY = "Mann Co. Supply Crate Key"
@@ -150,13 +156,22 @@ print(
 #   "Weapon Grip": null
 # }
 
-# get_lowest_price (get_price)
-print(
-    "get_lowest_price:",
-    market.get_lowest_price(AppID.CSGO, "Weapon Barrel"),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
+# get_lowest_price (get_price) - Exception
+try:
+    print(
+        "get_lowest_price:",
+        market.get_lowest_price(AppID.CSGO, "Weapon Barrel"),
+        sep=os.linesep,
+        end=os.linesep * 2,
+    )
+except InvalidItemOrAppIDException as e:
+    print(
+        "[InvalidItemOrAppIDException] get_lowest_price:",
+        e,
+        sep=os.linesep,
+        end=os.linesep * 2,
+    )
+
 print(
     "get_price (lowest_price):",
     market.get_price(252490, "No Mercy AK47", "lowest_price"),
@@ -164,8 +179,8 @@ print(
     end=os.linesep * 2,
 )
 # 252490 - Rust's App ID
-# get_lowest_price:
-# 12.26
+# [InvalidItemOrAppIDException] get_lowest_price:
+# Item "Weapon Barrel" with app ID "730" is considered invalid by the Steam Community Market.
 #
 # get_price (lowest_price):
 # 6.33

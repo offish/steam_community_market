@@ -23,7 +23,7 @@ A synchronous Python read-only wrapper for the Steam Community Market API.
 
 ## Introduction
 
-`steam-community-market` is a Python library that provides a simple and efficient way to interact with the Steam Community Market API. It is designed to be easy to use and provides support for Python 3.9 and above.
+`steam-community-market` is a [Python](https://www.python.org/) library that provides a simple and efficient way to interact with the [Steam Community Market](https://steamcommunity.com/market/) API. It is designed to be easy to use and provides support for [Python 3.9](https://docs.python.org/3.9/) and above.
 
 ### Features:
 
@@ -55,13 +55,13 @@ To use the library, first import it in your Python script:
 from steam_community_market import *
 ```
 
-Then, create an instance of the `Market` class specifying the currency you want to use:
+Then, create an instance of the `Market` class, specifying the currency you want to use:
 
 ```python
 market = Market(currency=SteamCurrency.USD)
 ```
 
-Now you can use the various functions provided by the library to interact with the Steam Community Market API.
+Now you can use the various functions provided by the library to interact with the [Steam Community Market](https://steamcommunity.com/market/) API.
 
 ## Examples
 

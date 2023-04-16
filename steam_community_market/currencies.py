@@ -2,108 +2,7 @@ from enum import IntEnum
 
 
 class SteamCurrency(IntEnum):
-    """All currencies that have been supported by Steam at some point in time, including the ``legacy`` ones.
-
-    .. list-table:: Currencies
-       :header-rows: 1
-
-       * - Currency Code
-         - Currency Name
-       * - USD
-         - United States Dollar
-       * - GBP
-         - Great Britain Pound
-       * - EUR
-         - Euro
-       * - CHF
-         - Swiss Franc
-       * - RUB
-         - Russian Ruble
-       * - PLN
-         - Polish Złoty
-       * - BRL
-         - Brazilian Real
-       * - JPY
-         - Japanese Yen
-       * - NOK
-         - Norwegian Krone
-       * - IDR
-         - Indonesian Rupiah
-       * - MYR
-         - Malaysian Ringgit
-       * - PHP
-         - Philippine Peso
-       * - SGD
-         - Singapore Dollar
-       * - THB
-         - Thai Baht
-       * - VND
-         - Vietnamese Dong
-       * - KRW
-         - South Korean Won
-       * - TRY
-         - Turkish Lira
-       * - UAH
-         - Ukrainian Hryvnia
-       * - MXN
-         - Mexican Peso
-       * - CAD
-         - Canadian Dollar
-       * - AUD
-         - Australian Dollar
-       * - NZD
-         - New Zealand Dollar
-       * - CNY
-         - Chinese Yuan
-       * - INR
-         - Indian Rupee
-       * - CLP
-         - Chilean Peso
-       * - PEN
-         - Peruvian Sol
-       * - COP
-         - Colombian Peso
-       * - ZAR
-         - South African Rand
-       * - HKD
-         - Hong Kong Dollar
-       * - TWD
-         - New Taiwan Dollar
-       * - SAR
-         - Saudi Riyal
-       * - AED
-         - United Arab Emirates Dirham
-       * - SEK
-         - Swedish Krona
-       * - ARS
-         - Argentine Peso
-       * - ILS
-         - Israeli New Sheqel
-       * - BYN
-         - Belarusian Ruble
-       * - KZT
-         - Kazakhstani Tenge
-       * - KWD
-         - Kuwaiti Dinar
-       * - QAR
-         - Qatari Rial
-       * - CRC
-         - Costa Rican Colón
-       * - UYU
-         - Uruguayan Peso
-       * - BGN
-         - Bulgarian Lev
-       * - HRK
-         - Croatian Kuna
-       * - CZK
-         - Czech Koruna
-       * - DKK
-         - Danish Krone
-       * - HUF
-         - Hungarian Forint
-       * - RON
-         - Romanian Leu
-    """
+    """All currencies that have been supported by Steam at some point in time, including the ``legacy`` ones."""
 
     #: United States Dollar
     USD = 1
@@ -248,30 +147,7 @@ class SteamCurrency(IntEnum):
 
 
 class SteamLegacyCurrency(IntEnum):
-    """Legacy currencies that have been supported by Steam at some point in time, but are no longer.
-
-    .. list-table:: Legacy Currencies
-       :header-rows: 1
-
-       * - Currency Code
-         - Currency Name
-       * - SEK
-         - Swedish Krona
-       * - BYN
-         - Belarusian Ruble
-       * - BGN
-         - Bulgarian Lev
-       * - HRK
-         - Croatian Kuna
-       * - CZK
-         - Czech Koruna
-       * - DKK
-         - Danish Krone
-       * - HUF
-         - Hungarian Forint
-       * - RON
-         - Romanian Leu
-    """
+    """Legacy currencies that have been supported by Steam at some point in time, but are no longer."""
 
     #: Swedish Krona
     SEK = 33

@@ -15,6 +15,11 @@ class Market:
     """A class representing a Steam Community Market object.
 
     It allows users to get price and volume information for items in the Steam Community Market and supports multiple currencies.
+
+    .. currentmodule:: steam_community_market.currencies
+
+    :param currency: Currency used for prices. Defaults to :attr:`SteamCurrency.USD`.
+    :type currency: int or str or SteamCurrency or SteamLegacyCurrency
     """
 
     def __init__(
@@ -23,16 +28,6 @@ class Market:
             int, str, SteamCurrency, SteamLegacyCurrency
         ] = SteamCurrency.USD,
     ) -> None:
-        """Initializes the Market object with a specified currency.
-
-        .. currentmodule:: steam_community_market.currencies
-
-        :param currency: Currency used for prices. Defaults to :attr:`SteamCurrency.USD`.
-        :type currency: int or str or SteamCurrency or SteamLegacyCurrency
-        :raises InvalidCurrencyException: Raised when a currency is considered to be invalid by the Steam Community Market.
-        :raises LegacyCurrencyException: Raised when a currency is not supported by the Steam Community Market anymore.
-        """
-
         self.currency = self._supported_currency(currency)
 
     def get_overview(

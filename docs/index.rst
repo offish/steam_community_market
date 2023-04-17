@@ -27,6 +27,9 @@ Using this library
 :doc:`Installation <pages/guidelines/installation>`
     How to install the library and integrate it into your project.
 
+:doc:`License <pages/guidelines/license>`
+    The license that this library is released under.
+
 Class Documentation
 -------------------
 
@@ -57,6 +60,7 @@ Class Documentation
     :hidden:
 
     pages/guidelines/installation
+    pages/guidelines/license
 
 .. toctree::
     :caption: Classes Documentation

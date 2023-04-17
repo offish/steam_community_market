@@ -22,7 +22,7 @@ sys.path.append(os.path.abspath("extensions"))
 project = "steam-community-market"
 slug = re.sub(r"\W+", "-", project.lower())
 author = "offish"
-copyright = f"2020, {author}"
+copyright = f"2020 - 2023 {author}"
 language = "en"
 
 with open("../steam_community_market/__init__.py") as f:
@@ -83,14 +83,3 @@ html_theme_options = {
     "prev_next_buttons_location": None,
     "style_nav_header_background": "#2a475e",
 }
-
-
-# html_theme_options = {
-#     "description": "by offish",
-#     "github_user": "offish",
-#     "github_repo": "steam_community_market",
-#     "github_button": "true",
-#     "github_banner": "true",
-#     "fixed_sidebar": "true",
-#     "donate_url": "https://steamcommunity.com/tradeoffer/new/?partner=293059984&token=0-l_idZR",
-# }

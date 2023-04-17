@@ -3,10 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+**********************
 steam-community-market
-======================================
+**********************
 
-`steam-community-market`_ is a Python_ library that provides a simple and efficient way to interact with the `Steam Community Market`_ API. It is designed to be easy to use and provides support for `Python 3.9`_ and above.
+`steam-community-market <https://github.com/offish/steam_community_market/>`__ is a `Python <https://www.python.org/>`__ library that provides a simple and efficient way to interact with the `Steam Community Market`_ API. It is designed to be easy to use and provides support for `Python 3.9 <https://docs.python.org/3.9/>`__ and above.
 
 .. image:: https://img.shields.io/pypi/pyversions/steam-community-market?color=0067a3&label=Supported%20Versions&logo=pypi&logoColor=0067a3
     :target: https://pypi.org/project/steam-community-market/
@@ -45,12 +46,9 @@ Class Documentation
 :doc:`Exceptions <pages/classes/exceptions>`
     A class containing all of the exceptions used by the library.
 
-.. Links
+.. Common Links
 
-.. _steam-community-market: https://github.com/offish/steam_community_market/
-.. _Python: https://www.python.org/
 .. _Steam Community Market: https://steamcommunity.com/market/
-.. _Python 3.9: https://docs.python.org/3.9/
 
 .. Hidden TOCs
 

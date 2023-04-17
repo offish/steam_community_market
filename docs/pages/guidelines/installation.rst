@@ -31,8 +31,4 @@ Then, create a new instance of the :class:`Market` class, specifying the currenc
 
     market = Market(currency=SteamCurrency.USD)
 
-Now you can use the various functions provided by the library to interact with the `Steam Community Market`_ API.
-
-.. Links
-
-.. _Steam Community Market: https://steamcommunity.com/market
+Now you can use the various functions provided by the library to interact with the `Steam Community Market <https://steamcommunity.com/market>`__ API.

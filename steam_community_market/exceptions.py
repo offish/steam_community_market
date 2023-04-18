@@ -29,6 +29,26 @@ class InvalidItemOrAppIDException(Exception):
         super().__init__(message)
 
 
+class InvalidLanguageException(Exception):
+    """Exception raised when a language is considered to be invalid by the Steam Community Market.
+
+    :param language: The unsupported invalid language.
+    :type language: Any
+    :param message_format: The format of the exception message. Defaults to ``Language "{}" is considered invalid by the Steam Community Market.``.
+    :type message_format: str
+
+    .. versionadded:: 1.3.0
+    """
+
+    def __init__(
+        self,
+        language: Any,
+        message_format: str = 'Language "{}" is considered invalid by the Steam Community Market.',
+    ) -> None:
+        message = message_format.format(language)
+        super().__init__(message)
+
+
 class InvalidCurrencyException(Exception):
     """Exception raised when a currency is considered to be invalid by the Steam Community Market.
 

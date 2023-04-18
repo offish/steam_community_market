@@ -4,9 +4,10 @@ steam-community-market
 A synchronous Python read-only wrapper for the Steam Community Market API.
 """
 from .currencies import SteamCurrency, SteamLegacyCurrency
-from .enums import AppID
+from .enums import AppID, SteamLanguage
 from .exceptions import (
     InvalidItemOrAppIDException,
+    InvalidLanguageException,
     InvalidCurrencyException,
     LegacyCurrencyException,
     TooManyRequestsException,
@@ -20,8 +21,10 @@ __all__ = [
     "SteamLegacyCurrency",
     # Enums
     "AppID",
+    "SteamLanguage",
     # Exceptions
     "InvalidItemOrAppIDException",
+    "InvalidLanguageException",
     "InvalidCurrencyException",
     "LegacyCurrencyException",
     "TooManyRequestsException",

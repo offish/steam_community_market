@@ -71,9 +71,11 @@ def _request_overview(
     """
 
     url = "https://steamcommunity.com/market/priceoverview/"
+    if isinstance(app_id, AppID):
+        app_id = app_id.value
 
     payload = {
-        "appid": _app_id_value(app_id),
+        "appid": app_id,
         "market_hash_name": _fix_item_name(market_hash_name),
         "currency": currency.value,
     }
@@ -86,35 +88,11 @@ def _request_overview(
     return data
 
 
-def _app_id_value(app_id: Union[int, list[Union[int, AppID]], AppID]) -> int:
-    """Validates and returns the value/s of the :class:`AppID`/s.
-
-    .. currentmodule:: steam_community_market.enums
-
-    :param app_id: The :class:`AppID` of the game.
-    :type app_id: int or list[int or AppID] or AppID
-    :return: The value of the :class:`AppID`.
-    :rtype: int
-    :raises TypeError: Raised when the ``app_id`` is not of a supported type.
-
-    .. versionadded:: 1.3.0
-    """
-
-    if isinstance(app_id, AppID):
-        return app_id.value
-
-    if isinstance(app_id, int):
-        return app_id
-
-    raise TypeError(f'"app_id" must be "int" or "AppID", not "{type(app_id)}".')
-
-
 def _fix_item_name(market_hash_name: str) -> str:
     """Replaces "/" with "-" and returns the item name.
 
     :param market_hash_name: The name of the item how it appears on the Steam Community Market.
     :type market_hash_name: str
-    :raises TypeError: If the given ``market_hash_name`` is not a string.
     :return: The correct item name.
     :rtype: str
 
@@ -122,7 +100,4 @@ def _fix_item_name(market_hash_name: str) -> str:
     .. versionadded:: 1.1.0
     """
 
-    if isinstance(market_hash_name, str):
-        return market_hash_name.replace("/", "-")
-
-    raise TypeError(f'"name" must be "str", not "{type(market_hash_name)}".')
+    return market_hash_name.replace("/", "-")

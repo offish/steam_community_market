@@ -18,11 +18,9 @@ class Market:
     It allows users to interact with the Steam Community Market API, by providing methods to get different information about items in the market. \
         It supports all currencies and languages that are supported by the Steam Community Market API.
 
-    .. currentmodule:: steam_community_market.currencies
-
-    :param currency: Currency used for prices. Defaults to :attr:`SteamCurrency.USD`.
+    :param currency: Currency used for prices. Defaults to :attr:`SteamCurrency.USD <steam_community_market.currencies.SteamCurrency.USD>`.
     :type currency: SteamCurrency or SteamLegacyCurrency or int or str
-    :param language: Language used for the returned data. Defaults to :attr:`SteamLanguage.ENGLISH`.
+    :param language: Language used for the returned data. Defaults to :attr:`SteamLanguage.ENGLISH <steam_community_market.enums.SteamLanguage.ENGLISH>`.
     :type language: SteamLanguage or int or str
     :raises InvalidCurrencyException: Raised when the ``currency`` is invalid.
     :raises LegacyCurrencyException: Raised when the ``currency`` is a legacy currency.
@@ -47,9 +45,7 @@ class Market:
     ) -> Optional[dict[str, Union[bool, float, int, str]]]:
         """Gets the prices and volume of an item in the Steam Community Market.
 
-        .. currentmodule:: steam_community_market.enums
-
-        :param app_id: The :class:`AppID` of the game the item is from.
+        :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
         :param market_hash_name: The name of the item how it appears on the Steam Community Market.
         :type market_hash_name: str
@@ -83,10 +79,8 @@ class Market:
     ) -> dict[str, dict[str, Union[bool, str]]]:
         """Gets the prices and volumes of multiple items in the Steam Community Market.
         
-        .. currentmodule:: steam_community_market.enums
-        
-        :param app_id: If given a list, it needs to have the same length as the ``market_hash_names``. \
-            If given :obj:`int` or :class:`AppID`, every item in ``market_hash_names`` must have this :class:`AppID`.
+        :param app_id: If given a list, it needs to have the same length as the ``market_hash_names``. If given :obj:`int` or \
+            :class:`AppID <steam_community_market.enums.AppID>`, every item in ``market_hash_names`` must have this :class:`AppID <steam_community_market.enums>`.
         :type app_id: AppID or int or list[AppID or int]
         :param market_hash_names: A list of item names how they appear on the Steam Community Market.
         :type market_hash_names: list[str]
@@ -123,15 +117,15 @@ class Market:
         }
 
     def get_overviews_from_dict(
-        self, items: dict[Union[AppID, int], list[str]], type_conversion: bool = True
+        self,
+        items: dict[Union[AppID, int], Union[list[str], str]],
+        type_conversion: bool = True,
     ) -> dict[str, dict[str, Union[bool, str]]]:
         """Gets the prices and volumes of multiple items in the Steam Community Market from a dictionary.
         
-        .. currentmodule:: steam_community_market.enums
-        
-        :param items: A dictionary containing :class:`AppID` as `keys` and a list of item names as `values`. There is an \
+        :param items: A dictionary containing :class:`AppID <steam_community_market.enums.AppID>` as `keys` and a list of item names as `values`. There is an \
             example on how this dictionary should be constructed in ``example.py``.
-        :type items: dict[AppID or int, list[str]]
+        :type items: dict[AppID or int, list[str] or str]
         :param type_conversion: Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         :type type_conversion: bool
         :return: An overview of each item.
@@ -145,13 +139,16 @@ class Market:
 
         if not isinstance(items, dict) or not all(
             isinstance(app_id, (AppID, int))
-            and isinstance(market_hash_names, list)
-            and isinstance(name, str)
+            and (
+                isinstance(market_hash_names, list)
+                and isinstance(name, str)
+                or isinstance(market_hash_names, str)
+            )
             for app_id, market_hash_names in items.items()
             for name in market_hash_names
         ):
             raise TypeError(
-                f'The type of "items" must be "dict[Union[AppID, int], list[str]]", not "{type(items)}".'
+                f'The type of "items" must be "dict[Union[AppID, int], Union[list[str], str]]", not "{type(items)}".'
             )
 
         self._validate_type_conversion(type_conversion)
@@ -177,9 +174,7 @@ class Market:
     ) -> Optional[dict[str, Union[float, str]]]:
         """Gets the lowest and/or median price of an item in the Steam Community Market, if they exist.
 
-        .. currentmodule:: steam_community_market.enums
-
-        :param app_id: The :class:`AppID` of the game the item is from.
+        :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
         :param market_hash_name: The name of the item how it appears on the Steam Community Market.
         :type market_hash_name: str
@@ -218,9 +213,7 @@ class Market:
     ) -> Optional[float]:
         """Gets the lowest price of an item in the Steam Community Market, if is exists.
 
-        .. currentmodule:: steam_community_market.enums
-
-        :param app_id: The :class:`AppID` of the game the item is from.
+        :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
         :param market_hash_name: The name of the item how it appears on the Steam Community Market.
         :type market_hash_name: str
@@ -253,9 +246,7 @@ class Market:
     ) -> Optional[float]:
         """Gets the median price of an item in the Steam Community Market, if it exists.
 
-        .. currentmodule:: steam_community_market.enums
-
-        :param app_id: The :class:`AppID` of the game the item is from.
+        :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
         :param market_hash_name: The name of the item how it appears on the Steam Community Market.
         :type market_hash_name: str
@@ -290,9 +281,7 @@ class Market:
     ) -> Optional[float]:
         """Gets the lowest or median price of an item.
 
-        .. currentmodule:: steam_community_market.enums
-
-        :param app_id: The :class:`AppID` of the game the item is from.
+        :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
         :param market_hash_name: The name of the item how it appears on the Steam Community Market.
         :type market_hash_name: str
@@ -345,9 +334,7 @@ class Market:
     ) -> Optional[int]:
         """Gets the volume of an item in the Steam Community Market, if it exists.
 
-        .. currentmodule:: steam_community_market.enums
-
-        :param app_id: The :class:`AppID` of the game the item is from.
+        :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
         :param market_hash_name: The name of the item how it appears on the Steam Community Market.
         :type market_hash_name: str
@@ -436,15 +423,14 @@ class Market:
     ) -> SteamCurrency:
         """Returns a supported currency.
 
-        .. currentmodule:: steam_community_market.currencies
-
         :param currency: Currency used for prices.
         :type currency: SteamCurrency or SteamLegacyCurrency or int or str
         :return: A supported currency.
         :rtype: SteamCurrency
         :raises InvalidCurrencyException: Raised when a currency is considered to be invalid by the Steam Community Market.
         :raises LegacyCurrencyException: Raised when a currency is not supported by the Steam Community Market anymore.
-        :raises TypeError: Raised when ``currency`` is not of type :class:`SteamCurrency`, :class:`SteamLegacyCurrency`, :obj:`int` or :obj:`str`.
+        :raises TypeError: Raised when ``currency`` is not of type :class:`SteamCurrency <steam_community_market.currencies.SteamCurrency>`, \
+            :class:`SteamLegacyCurrency <steam_community_market.currencies.SteamLegacyCurrency>`, :obj:`int` or :obj:`str`.
 
         .. versionadded:: 1.3.0
         """
@@ -482,14 +468,12 @@ class Market:
     def _valid_language(language: Union[SteamLanguage, str]) -> SteamLanguage:
         """Returns a Steam language object.
 
-        .. currentmodule:: steam_community_market.enums
-
         :param language: The language to use.
         :type language: SteamLanguage or str
         :return: A Steam language object.
         :rtype: SteamLanguage
         :raises InvalidLanguageException: Raised when the language is invalid.
-        :raises TypeError: Raised when ``language`` is not of type :class:`SteamLanguage` or :obj:`str`.
+        :raises TypeError: Raised when ``language`` is not of type :class:`SteamLanguage <steam_community_market.enums.SteamLanguage>` or :obj:`str`.
 
         .. versionadded:: 1.3.0
         """
@@ -519,7 +503,8 @@ class Market:
         :type app_id: AppID or int or list[AppID, int]
         :param support_lists: Whether to support lists.
         :type support_lists: bool
-        :raises TypeError: Raised when ``app_id`` is not of type :class:`AppID`, :obj:`int` or :obj:`list` of :class:`AppID` and :obj:`int`.
+        :raises TypeError: Raised when ``app_id`` is not of type :class:`AppID <steam_community_market.enum.AppIDs>`, :obj:`int` or :obj:`list` of \
+            :class:`AppID <steam_community_market.enums.AppID>` and :obj:`int`.
 
         .. versionadded:: 1.3.0
         """
@@ -566,16 +551,14 @@ class Market:
     ) -> None:
         """Validates the parameters for the overview method.
 
-        .. currentmodule:: steam_community_market.market
-
         :param app_id: The app ID to validate.
         :type app_id: AppID or int or list[AppID, int]
         :param market_hash_name: The market hash name to validate.
         :type market_hash_name: str or list[str]
         :param support_lists: Whether to support lists.
         :type support_lists: bool
-        :raises TypeError: Raised when any of the parameters is not of the correct type, besides ``support_lists``, \
-            which helps validate :func:`Market.get_overviews`.
+        :raises TypeError: Raised when any of the parameters is not of the correct type, besides ``support_lists``, which helps validate \
+            :func:`get_overviews <steam_community_market.market.Market.get_overviews>`.
 
         .. versionadded:: 1.3.0
         """

@@ -7,7 +7,7 @@ from .exceptions import (
     InvalidCurrencyException,
     LegacyCurrencyException,
 )
-from .request import _request_overview
+from .requests import _request_overview
 
 from typing import Optional, Union
 

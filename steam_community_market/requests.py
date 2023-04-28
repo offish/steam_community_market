@@ -1,4 +1,3 @@
-from .enums import AppID
 from .currencies import SteamCurrency
 from .exceptions import InvalidItemOrAppIDException, TooManyRequestsException
 
@@ -71,12 +70,10 @@ def _request_overview(
     """
 
     url = "https://steamcommunity.com/market/priceoverview/"
-    if isinstance(app_id, AppID):
-        app_id = app_id.value
 
     payload = {
         "appid": app_id,
-        "market_hash_name": _fix_item_name(market_hash_name),
+        "market_hash_name": market_hash_name,
         "currency": currency.value,
     }
 
@@ -86,18 +83,3 @@ def _request_overview(
         raise InvalidItemOrAppIDException(app_id, market_hash_name)
 
     return data
-
-
-def _fix_item_name(market_hash_name: str) -> str:
-    """Replaces "/" with "-" and returns the item name.
-
-    :param market_hash_name: The name of the item how it appears on the Steam Community Market.
-    :type market_hash_name: str
-    :return: The correct item name.
-    :rtype: str
-
-    .. versionchanged:: 1.3.0
-    .. versionadded:: 1.1.0
-    """
-
-    return market_hash_name.replace("/", "-")

@@ -67,5 +67,6 @@ Class Documentation
 
     pages/classes/market
     pages/classes/currencies
+    pages/classes/decorators
     pages/classes/enums
     pages/classes/exceptions

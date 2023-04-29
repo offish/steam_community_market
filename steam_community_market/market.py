@@ -1,9 +1,9 @@
 from .currencies import SteamCurrency, SteamLegacyCurrency
 from .decorators import sanitized, typechecked
 from .enums import AppID, SteamLanguage
-from .requests import _request_overview
+from .requests import _request_overview, exponential_backoff_strategy
 
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 import re
 
@@ -80,6 +80,9 @@ class Market:
         market_hash_names: list[str],
         type_conversion: bool = True,
         currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
+        rate_limit_handler: Optional[
+            Callable[[int], tuple[bool, float]]
+        ] = exponential_backoff_strategy,
     ) -> dict[str, dict[str, Union[bool, str]]]:
         """Gets the prices and volumes of multiple items in the Steam Community Market.
         
@@ -92,6 +95,9 @@ class Market:
         :type type_conversion: bool
         :param currency: Currency used for prices. Defaults to the value imposed by the instance of the class.
         :type currency: SteamCurrency or SteamLegacyCurrency or int or str
+        :param rate_limit_handler: A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple \
+            containing a :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to :func:`rate_limit_handler <steam_community_market.requests.rate_limit_handler>`.
+        :type rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]]
         :return: An overview of each item. 
         :rtype: dict[str, dict[str, bool or str]]
         :raises IndexError: Raised when ``app_id`` and ``market_hash_names`` have different lengths.
@@ -115,7 +121,11 @@ class Market:
             for name, id in zip(market_hash_names, app_id)
             for result in [
                 _request_overview(
-                    id, name, currency or self.currency, raise_exception=False
+                    id,
+                    name,
+                    currency or self.currency,
+                    raise_exception=False,
+                    rate_limit_handler=rate_limit_handler,
                 )
             ]
         }
@@ -127,6 +137,9 @@ class Market:
         items_dict: dict[Union[AppID, int], list[str]],
         type_conversion: bool = True,
         currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
+        rate_limit_handler: Optional[
+            Callable[[int], tuple[bool, float]]
+        ] = exponential_backoff_strategy,
     ) -> dict[str, dict[str, Union[bool, str]]]:
         """Gets the prices and volumes of multiple items in the Steam Community Market from a dictionary.
         
@@ -137,6 +150,9 @@ class Market:
         :type type_conversion: bool
         :param currency: Currency used for prices. Defaults to the value imposed by the instance of the class.
         :type currency: SteamCurrency or SteamLegacyCurrency or int or str
+        :param rate_limit_handler: A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple \
+            containing a :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to :func:`rate_limit_handler <steam_community_market.requests.rate_limit_handler>`.
+        :type rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]]
         :return: An overview of each item.
         :rtype: dict[str, dict[str, bool or str]]
         :raises TooManyRequestsException: Raised when the request limit has been reached.
@@ -150,7 +166,11 @@ class Market:
         for app_id, names in items_dict.items():
             for name in names:
                 overview = _request_overview(
-                    app_id, name, currency or self.currency, raise_exception=False
+                    app_id,
+                    name,
+                    currency or self.currency,
+                    raise_exception=False,
+                    rate_limit_handler=rate_limit_handler,
                 )
                 if type_conversion:
                     overview = self._overview_type_converter(overview)

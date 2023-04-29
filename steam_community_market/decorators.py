@@ -139,18 +139,19 @@ def sanitized(func: Callable[..., Any]) -> Callable[..., Any]:
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        annotations = func.__annotations__
-        co_varnames = func.__code__.co_varnames
+        sig = signature(func)
+        param_names = list(sig.parameters.keys())
+        sanitize_param_names = list(_sanitize_funcs.keys())
 
         args_list = list(args)
 
         for i, arg in enumerate(args_list):
-            arg_name = co_varnames[i]
-            if arg_name in annotations:
+            arg_name = param_names[i]
+            if arg_name in sanitize_param_names:
                 args_list[i] = _sanitize_value(arg, arg_name)
 
         for kwarg_name, kwarg_value in kwargs.items():
-            if kwarg_name in annotations:
+            if kwarg_name in sanitize_param_names:
                 kwargs[kwarg_name] = _sanitize_value(kwarg_value, kwarg_name)
 
         return func(*tuple(args_list), **kwargs)

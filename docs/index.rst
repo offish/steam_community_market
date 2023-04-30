@@ -70,3 +70,4 @@ Class Documentation
     pages/classes/decorators
     pages/classes/enums
     pages/classes/exceptions
+    pages/classes/requests

@@ -58,7 +58,7 @@ from steam_community_market import *
 Then, create an instance of the `Market` class, specifying the currency you want to use:
 
 ```python
-market = Market(currency=SteamCurrency.USD)
+market = Market(currency=Currency.USD)
 ```
 
 Now you can use the various functions provided by the library to interact with the [Steam Community Market](https://steamcommunity.com/market/) API.

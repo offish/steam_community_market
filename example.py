@@ -5,16 +5,16 @@ from steam_community_market import (
     AppID,
     InvalidItemOrAppIDException,
     Market,
-    SteamCurrency,
+    Currency,
 )
 
 
 # Because we love "Mann Co. Supply Crate Key" <3
 MANN_CO_SUPPLY_CRATE_KEY = "Mann Co. Supply Crate Key"
 
-# Could either be: 'EUR', 'eur' or 3.
-# For USD; leave it empty or use SteamCurrency.USD, 'USD', 'usd' or 1.
-market = Market(SteamCurrency.EUR)
+# Could either be: "Euro", "EUR" or 3.
+# For "USD"; leave it empty or use Currency.USD, "United States Dollar", "USD" or 1.
+market = Market(Currency.EUR)
 
 
 # get_overview

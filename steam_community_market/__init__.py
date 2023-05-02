@@ -3,9 +3,9 @@ steam-community-market
 ======================
 A synchronous Python read-only wrapper for the Steam Community Market API.
 """
-from .currencies import SteamCurrency, SteamLegacyCurrency
+from .currencies import Currency, LegacyCurrency
 from .decorators import sanitized, typechecked
-from .enums import AppID, SteamLanguage
+from .enums import AppID, Language
 from .exceptions import (
     InvalidItemOrAppIDException,
     InvalidLanguageException,
@@ -14,18 +14,19 @@ from .exceptions import (
     TooManyRequestsException,
 )
 from .market import Market
+from .requests import exponential_backoff_strategy
 
 __version__ = "1.3.0"
 __all__ = [
     # Currencies
-    "SteamCurrency",
-    "SteamLegacyCurrency",
+    "Currency",
+    "LegacyCurrency",
     # Decorators
     "sanitized",
     "typechecked",
     # Enums
     "AppID",
-    "SteamLanguage",
+    "Language",
     # Exceptions
     "InvalidItemOrAppIDException",
     "InvalidLanguageException",
@@ -34,4 +35,6 @@ __all__ = [
     "TooManyRequestsException",
     # Market
     "Market",
+    # Requests
+    "exponential_backoff_strategy",
 ]

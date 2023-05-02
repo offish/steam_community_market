@@ -1,6 +1,6 @@
-from .currencies import SteamCurrency, SteamLegacyCurrency
+from .currencies import Currency, LegacyCurrency
 from .decorators import sanitized, typechecked
-from .enums import AppID, SteamLanguage
+from .enums import AppID, Language
 from .requests import _request_overview, exponential_backoff_strategy
 
 from typing import Callable, Optional, Union
@@ -14,10 +14,10 @@ class Market:
     It allows users to interact with the Steam Community Market API, by providing methods to get different information about items in the market. \
         It supports all currencies and languages that are supported by the Steam Community Market API.
 
-    :param currency: Currency used for prices. Defaults to :attr:`SteamCurrency.USD <steam_community_market.currencies.SteamCurrency.USD>`.
-    :type currency: SteamCurrency or SteamLegacyCurrency or int or str
-    :param language: Language used for the returned data. Defaults to :attr:`SteamLanguage.ENGLISH <steam_community_market.enums.SteamLanguage.ENGLISH>`.
-    :type language: SteamLanguage or int or str
+    :param currency: Currency used for prices. Defaults to :attr:`Currency.USD <steam_community_market.currencies.Currency.USD>`.
+    :type currency: Currency or LegacyCurrency or int or str
+    :param language: Language used for the returned data. Defaults to :attr:`Language.ENGLISH <steam_community_market.enums.Language.ENGLISH>`.
+    :type language: Language or int or str
     :raises InvalidCurrencyException: Raised when the ``currency`` is invalid.
     :raises LegacyCurrencyException: Raised when the ``currency`` is a legacy currency.
     :raises InvalidLanguageException: Raised when the ``language`` is invalid.
@@ -27,10 +27,8 @@ class Market:
     @sanitized
     def __init__(
         self,
-        currency: Union[
-            SteamCurrency, SteamLegacyCurrency, int, str
-        ] = SteamCurrency.USD,
-        language: Union[SteamLanguage, str] = SteamLanguage.ENGLISH,
+        currency: Union[Currency, LegacyCurrency, int, str] = Currency.USD,
+        language: Union[Language, str] = Language.ENGLISH,
     ) -> None:
         self.currency = currency
         self.language = language
@@ -42,9 +40,11 @@ class Market:
         app_id: Union[AppID, int],
         market_hash_name: str,
         type_conversion: bool = True,
-        currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
+        currency: Union[Currency, LegacyCurrency, int, str] = None,
     ) -> Optional[dict[str, Union[bool, float, int, str]]]:
         """Gets the prices and volume of an item in the Steam Community Market.
+
+        .. versionchanged:: 1.3.0
 
         :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
@@ -53,15 +53,12 @@ class Market:
         :param type_conversion: Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         :type type_conversion: bool
         :param currency: Currency used for prices. Defaults to the value imposed by the instance of the class.
-        :type currency: SteamCurrency or SteamLegacyCurrency or int or str
+        :type currency: Currency or LegacyCurrency or int or str
         :return: An overview of the item on success, :obj:`None` otherwise. Overview includes both volume and prices.
         :rtype: dict[str, bool or float or int or str] or None
         :raises InvalidItemOrAppIDException: Raised when the ``app_id`` or ``market_hash_name``, or the combination of both, is invalid.
         :raises TooManyRequestsException: Raised when the request limit has been reached.
         :raises TypeError: Raised when any of the parameters are of the wrong type.
-
-        .. versionchanged:: 1.3.0
-        .. versionadded:: 1.0.0
         """
 
         data = _request_overview(app_id, market_hash_name, currency or self.currency)
@@ -79,12 +76,12 @@ class Market:
         app_id: Union[AppID, int, list[Union[AppID, int]]],
         market_hash_names: list[str],
         type_conversion: bool = True,
-        currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
-        rate_limit_handler: Optional[
-            Callable[[int], tuple[bool, float]]
-        ] = exponential_backoff_strategy,
+        currency: Union[Currency, LegacyCurrency, int, str] = None,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
     ) -> dict[str, dict[str, Union[bool, str]]]:
         """Gets the prices and volumes of multiple items in the Steam Community Market.
+        
+        .. versionchanged:: 1.3.0
         
         :param app_id: If given a list, it needs to have the same length as the ``market_hash_names``. If given :obj:`int` or \
             :class:`AppID <steam_community_market.enums.AppID>`, every item in ``market_hash_names`` must have this :class:`AppID <steam_community_market.enums>`.
@@ -94,18 +91,15 @@ class Market:
         :param type_conversion: Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         :type type_conversion: bool
         :param currency: Currency used for prices. Defaults to the value imposed by the instance of the class.
-        :type currency: SteamCurrency or SteamLegacyCurrency or int or str
+        :type currency: Currency or LegacyCurrency or int or str
         :param rate_limit_handler: A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple \
-            containing a :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to :func:`rate_limit_handler <steam_community_market.requests.rate_limit_handler>`.
+            containing a :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to :func:`exponential_backoff_strategy <steam_community_market.requests.exponential_backoff_strategy>`.
         :type rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]]
         :return: An overview of each item. 
         :rtype: dict[str, dict[str, bool or str]]
         :raises IndexError: Raised when ``app_id`` and ``market_hash_names`` have different lengths.
         :raises TooManyRequestsException: Raised when the request limit has been reached.
         :raises TypeError: Raised when any of the parameters are of the wrong type.
-        
-        .. versionchanged:: 1.3.0
-        .. versionadded:: 1.0.0
         """
 
         if not isinstance(app_id, list):
@@ -125,7 +119,8 @@ class Market:
                     name,
                     currency or self.currency,
                     raise_exception=False,
-                    rate_limit_handler=rate_limit_handler,
+                    rate_limit_handler=rate_limit_handler
+                    or exponential_backoff_strategy,
                 )
             ]
         }
@@ -136,12 +131,12 @@ class Market:
         self,
         items_dict: dict[Union[AppID, int], list[str]],
         type_conversion: bool = True,
-        currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
-        rate_limit_handler: Optional[
-            Callable[[int], tuple[bool, float]]
-        ] = exponential_backoff_strategy,
+        currency: Union[Currency, LegacyCurrency, int, str] = None,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
     ) -> dict[str, dict[str, Union[bool, str]]]:
         """Gets the prices and volumes of multiple items in the Steam Community Market from a dictionary.
+        
+        .. versionchanged:: 1.3.0
         
         :param items_dict: A dictionary containing :class:`AppID <steam_community_market.enums.AppID>` as `keys` and a list of item names as `values`. \
             There is an example on how this dictionary should be constructed in ``example.py``.
@@ -149,17 +144,14 @@ class Market:
         :param type_conversion: Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         :type type_conversion: bool
         :param currency: Currency used for prices. Defaults to the value imposed by the instance of the class.
-        :type currency: SteamCurrency or SteamLegacyCurrency or int or str
+        :type currency: Currency or LegacyCurrency or int or str
         :param rate_limit_handler: A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple \
-            containing a :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to :func:`rate_limit_handler <steam_community_market.requests.rate_limit_handler>`.
+            containing a :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to :func:`exponential_backoff_strategy <steam_community_market.requests.exponential_backoff_strategy>`.
         :type rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]]
         :return: An overview of each item.
         :rtype: dict[str, dict[str, bool or str]]
         :raises TooManyRequestsException: Raised when the request limit has been reached.
         :raises TypeError: Raised when any of the parameters are of the wrong type.
-        
-        .. versionchanged:: 1.3.0
-        .. versionadded:: 1.1.0
         """
 
         result = {}
@@ -170,7 +162,8 @@ class Market:
                     name,
                     currency or self.currency,
                     raise_exception=False,
-                    rate_limit_handler=rate_limit_handler,
+                    rate_limit_handler=rate_limit_handler
+                    or exponential_backoff_strategy,
                 )
                 if type_conversion:
                     overview = self._overview_type_converter(overview)
@@ -186,9 +179,11 @@ class Market:
         app_id: Union[AppID, int],
         market_hash_name: str,
         type_conversion: bool = True,
-        currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
+        currency: Union[Currency, LegacyCurrency, int, str] = None,
     ) -> Optional[dict[str, Union[float, str]]]:
         """Gets the lowest and/or median price of an item in the Steam Community Market, if they exist.
+
+        .. versionchanged:: 1.3.0
 
         :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
@@ -197,15 +192,12 @@ class Market:
         :param type_conversion: Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         :type type_conversion: bool
         :param currency: Currency used for prices. Defaults to the value imposed by the instance of the class.
-        :type currency: SteamCurrency or SteamLegacyCurrency or int or str
+        :type currency: Currency or LegacyCurrency or int or str
         :return: The lowest and/or median price of the item, if suceess. :obj:`None` otherwise.
         :rtype: dict[str, float or str] or None
         :raises InvalidItemOrAppIDException: Raised when the ``app_id`` or ``market_hash_name``, or the combination of both, is invalid.
         :raises TooManyRequestsException: Raised when the request limit has been reached.
         :raises TypeError: Raised when any of the parameters are of the wrong type.
-
-        .. versionchanged:: 1.3.0
-        .. versionadded:: 1.2.0
         """
 
         item = _request_overview(app_id, market_hash_name, currency or self.currency)
@@ -228,9 +220,11 @@ class Market:
         app_id: Union[AppID, int],
         market_hash_name: str,
         type_conversion: bool = True,
-        currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
+        currency: Union[Currency, LegacyCurrency, int, str] = None,
     ) -> Optional[float]:
         """Gets the lowest price of an item in the Steam Community Market, if is exists.
+
+        .. versionchanged:: 1.3.0
 
         :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
@@ -239,15 +233,12 @@ class Market:
         :param type_conversion: Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         :type type_conversion: bool
         :param currency: Currency used for prices. Defaults to the value imposed by the instance of the class.
-        :type currency: SteamCurrency or SteamLegacyCurrency or int or str
+        :type currency: Currency or LegacyCurrency or int or str
         :return: The lowest price of the item, if suceess. :obj:`None` otherwise.
         :rtype: float or None
         :raises InvalidItemOrAppIDException: Raised when the ``app_id`` or ``market_hash_name``, or the combination of both, is invalid.
         :raises TooManyRequestsException: Raised when the request limit has been reached.
         :raises TypeError: Raised when any of the parameters are of the wrong type.
-
-        .. versionchanged:: 1.3.0
-        .. versionadded:: 1.2.0
         """
 
         return self._get_price(
@@ -265,9 +256,11 @@ class Market:
         app_id: Union[AppID, int],
         market_hash_name: str,
         type_conversion: bool = True,
-        currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
+        currency: Union[Currency, LegacyCurrency, int, str] = None,
     ) -> Optional[float]:
         """Gets the median price of an item in the Steam Community Market, if it exists.
+
+        .. versionchanged:: 1.3.0
 
         :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
@@ -276,15 +269,12 @@ class Market:
         :param type_conversion: Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         :type type_conversion: bool
         :param currency: Currency used for prices. Defaults to the value imposed by the instance of the class.
-        :type currency: SteamCurrency or SteamLegacyCurrency or int or str
+        :type currency: Currency or LegacyCurrency or int or str
         :return: The median price of the item, if suceess. :obj:`None` otherwise.
         :rtype: float or None
         :raises InvalidItemOrAppIDException: Raised when the ``app_id`` or ``market_hash_name``, or the combination of both, is invalid.
         :raises TooManyRequestsException: Raised when the request limit has been reached.
         :raises TypeError: Raised when any of the parameters are of the wrong type.
-
-        .. versionchanged:: 1.3.0
-        .. versionadded:: 1.2.0
         """
 
         return self._get_price(
@@ -303,9 +293,11 @@ class Market:
         market_hash_name: str,
         price_type: str,
         type_conversion: bool = True,
-        currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
+        currency: Union[Currency, LegacyCurrency, int, str] = None,
     ) -> Optional[float]:
         """Gets the lowest or median price of an item.
+
+        .. versionadded:: 1.3.0
 
         :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
@@ -316,15 +308,13 @@ class Market:
         :param type_conversion: Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         :type type_conversion: bool
         :param currency: Currency used for prices. Defaults to the value imposed by the instance of the class.
-        :type currency: SteamCurrency or SteamLegacyCurrency or int or str
+        :type currency: Currency or LegacyCurrency or int or str
         :return: The price of the item, if suceess. :obj:`None` otherwise.
         :rtype: float or None
         :raises InvalidItemOrAppIDException: Raised when the ``app_id`` or ``market_hash_name``, or the combination of both, is invalid.
         :raises TooManyRequestsException: Raised when the request limit has been reached.
         :raises TypeError: Raised when any of the parameters are of the wrong type.
         :raises ValueError: Raised when ``price_type`` is not one of ``lowest_price`` or ``median_price``.
-
-        .. versionadded:: 1.3.0
         """
 
         return self._get_price(
@@ -341,6 +331,8 @@ class Market:
     ) -> Optional[int]:
         """Gets the volume of an item in the Steam Community Market, if it exists.
 
+        .. versionchanged:: 1.3.0
+
         :param app_id: The :class:`AppID <steam_community_market.enums.AppID>` of the game the item is from.
         :type app_id: AppID or int
         :param market_hash_name: The name of the item how it appears on the Steam Community Market.
@@ -352,9 +344,6 @@ class Market:
         :raises InvalidItemOrAppIDException: Raised when the ``app_id`` or ``market_hash_name``, or the combination of both, is invalid.
         :raises TooManyRequestsException: Raised when the request limit has been reached.
         :raises TypeError: Raised when any of the parameters are of the wrong type.
-
-        .. versionchanged:: 1.3.0
-        .. versionadded:: 1.2.0
         """
 
         item = _request_overview(app_id, market_hash_name, self.currency)
@@ -371,7 +360,7 @@ class Market:
         market_hash_name: str,
         price_type: str,
         type_conversion: bool = True,
-        currency: Union[SteamCurrency, SteamLegacyCurrency, int, str] = None,
+        currency: Union[Currency, LegacyCurrency, int, str] = None,
     ) -> Optional[float]:
         item = _request_overview(app_id, market_hash_name, currency or self.currency)
         if item is None or price_type not in item:

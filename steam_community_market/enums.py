@@ -5,42 +5,44 @@ from functools import lru_cache
 class AppID(IntEnum):
     """A short, incomplete, list of Steam apps that have a community market."""
 
-    #: ``Team Fortress 2``
     TF2 = 440
+    """The app ID of ``Team Fortress 2``."""
 
-    #: ``Dota 2``
     DOTA2 = 570
+    """The app ID of ``Dota 2``."""
 
-    #: ``Counter-Strike: Global Offensive``
     CSGO = 730
+    """The app ID of ``Counter-Strike: Global Offensive``."""
 
-    #: ``Steam``
     STEAM = 753
+    """The app ID of ``Steam``."""
 
-    #: ``Don't Starve``
     DS = 219740
+    """The app ID of ``Don't Starve``."""
 
-    #: ``Killing Floor 2``
     KF2 = 232090
+    """The app ID of ``Killing Floor 2``."""
 
-    #: ``SteamVR``
     STEAMVR = 250820
+    """The app ID of ``SteamVR``."""
 
-    #: ``Unturned``
     UNTURNED = 304930
+    """The app ID of ``Unturned``."""
 
-    #: ``Don't Starve Together``
     DST = 322330
+    """The app ID of ``Don't Starve Together``."""
 
-    #: ``PUBG: PlayerUnknown's Battlegrounds``
     PUBG = 578080
+    """The app ID of ``PLAYERUNKNOWN'S BATTLEGROUNDS``."""
 
-    #: ``Rust``
     RUST = 252490
+    """The app ID of ``Rust``."""
 
 
-class SteamLanguage(Enum):
+class Language(Enum):
     """The list of all languages supported by the Steam Community Market, which includes their native name, English name, and language code.
+
+    .. versionadded:: 1.3.0
 
     :ivar native_name: The native name of the language.
     :vartype native_name: str
@@ -48,9 +50,11 @@ class SteamLanguage(Enum):
     :vartype english_name: str
     :ivar code: The language code of the language.
     :vartype code: str
-
-    .. versionadded:: 1.3.0
     """
+
+    native_name: str
+    english_name: str
+    code: str
 
     ARABIC = ("العربية", "arabic", "ar")
     """The Arabic language.
@@ -384,12 +388,12 @@ class SteamLanguage(Enum):
     def from_string(cls, language: str):
         """Get a language from a string. The string can be the language's object name, native name, English name, or language code.
 
+        .. versionadded:: 1.3.0
+
         :param language: The language to get in string form.
         :type language: str
         :return: The language object, or :obj:`None` if the language was not found.
-        :rtype: SteamLanguage or None
-
-        .. versionadded:: 1.3.0
+        :rtype: Language or None
         """
 
         if not hasattr(cls, "_lookup"):

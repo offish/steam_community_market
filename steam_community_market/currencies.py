@@ -1,174 +1,473 @@
 from enum import IntEnum
+from functools import lru_cache
 
 
-class SteamCurrency(IntEnum):
-    """All currencies that have been supported by Steam at some point in time, including the ``legacy`` ones."""
+class Currency(IntEnum):
+    """All currencies that have been supported by Steam at some point in time, including the ones found inside :class:`LegacyCurrency`.
 
-    #: United States Dollar
-    USD = 1
+    .. versionchanged:: 1.3.0
 
-    #: Great Britain Pound
-    GBP = 2
+    :ivar english_name: The English name of the currency.
+    :vartype english_name: str
+    """
 
-    #: Euro
-    EUR = 3
+    english_name: str
 
-    #: Swiss Franc
-    CHF = 4
+    USD = (1, "United States Dollar")
+    """The United States Dollar currency.
+    
+    :ivar english_name: ```United States Dollar```
+    :vartype english_name: str
+    """
 
-    #: Russian Ruble
-    RUB = 5
+    GBP = (2, "Great Britain Pound")
+    """The Great Britain Pound currency.
+    
+    :ivar english_name: ```Great Britain Pound```
+    :vartype english_name: str
+    """
 
-    #: Polish Złoty
-    PLN = 6
+    EUR = (3, "Euro")
+    """The Euro currency.
+    
+    :ivar english_name: ```Euro```
+    :vartype english_name: str
+    """
 
-    #: Brazilian Real
-    BRL = 7
+    CHF = (4, "Swiss Franc")
+    """The Swiss Franc currency.
+    
+    :ivar english_name: ```Swiss Franc```
+    :vartype english_name: str
+    """
 
-    #: Japanese Yen
-    JPY = 8
+    RUB = (5, "Russian Ruble")
+    """The Russian Ruble currency.
+    
+    :ivar english_name: ```Russian Ruble```
+    :vartype english_name: str
+    """
 
-    #: Norwegian Krone
-    NOK = 9
+    PLN = (6, "Polish Złoty")
+    """The Polish Złoty currency.
+    
+    :ivar english_name: ```Polish Złoty```
+    :vartype english_name: str
+    """
 
-    #: Indonesian Rupiah
-    IDR = 10
+    BRL = (7, "Brazilian Real")
+    """The Brazilian Real currency.
+    
+    :ivar english_name: ```Brazilian Real```
+    :vartype english_name: str
+    """
 
-    #: Malaysian Ringgit
-    MYR = 11
+    JPY = (8, "Japanese Yen")
+    """The Japanese Yen currency.
+    
+    :ivar english_name: ```Japanese Yen```
+    :vartype english_name: str
+    """
 
-    #: Philippine Peso
-    PHP = 12
+    NOK = (9, "Norwegian Krone")
+    """The Norwegian Krone currency.
+    
+    :ivar english_name: ```Norwegian Krone```
+    :vartype english_name: str
+    """
 
-    #: Singapore Dollar
-    SGD = 13
+    IDR = (10, "Indonesian Rupiah")
+    """The Indonesian Rupiah currency.
+    
+    :ivar english_name: ```Indonesian Rupiah```
+    :vartype english_name: str
+    """
 
-    #: Thai Baht
-    THB = 14
+    MYR = (11, "Malaysian Ringgit")
+    """The Malaysian Ringgit currency.
+    
+    :ivar english_name: ```Malaysian Ringgit```
+    :vartype english_name: str
+    """
 
-    #: Vietnamese Dong
-    VND = 15
+    PHP = (12, "Philippine Peso")
+    """The Philippine Peso currency.
+    
+    :ivar english_name: ```Philippine Peso```
+    :vartype english_name: str
+    """
 
-    #: South Korean Won
-    KRW = 16
+    SGD = (13, "Singapore Dollar")
+    """The Singapore Dollar currency.
+    
+    :ivar english_name: ```Singapore Dollar```
+    :vartype english_name: str
+    """
 
-    #: Turkish Lira
-    TRY = 17
+    THB = (14, "Thai Baht")
+    """The Thai Baht currency.
+    
+    :ivar english_name: ```Thai Baht```
+    :vartype english_name: str
+    """
 
-    #: Ukrainian Hryvnia
-    UAH = 18
+    VND = (15, "Vietnamese Dong")
+    """The Vietnamese Dong currency.
+    
+    :ivar english_name: ```Vietnamese Dong```
+    :vartype english_name: str
+    """
 
-    #: Mexican Peso
-    MXN = 19
+    KRW = (16, "South Korean Won")
+    """The South Korean Won currency.
+    
+    :ivar english_name: ```South Korean Won```
+    :vartype english_name: str
+    """
 
-    #: Canadian Dollar
-    CAD = 20
+    TRY = (17, "Turkish Lira")
+    """The Turkish Lira currency.
+    
+    :ivar english_name: ```Turkish Lira```
+    :vartype english_name: str
+    """
 
-    #: Australian Dollar
-    AUD = 21
+    UAH = (18, "Ukrainian Hryvnia")
+    """The Ukrainian Hryvnia currency.
+    
+    :ivar english_name: ```Ukrainian Hryvnia```
+    :vartype english_name: str
+    """
 
-    #: New Zealand Dollar
-    NZD = 22
+    MXN = (19, "Mexican Peso")
+    """The Mexican Peso currency.
+    
+    :ivar english_name: ```Mexican Peso```
+    :vartype english_name: str
+    """
 
-    #: Chinese Yuan
-    CNY = 23
+    CAD = (20, "Canadian Dollar")
+    """The Australian Dollar currency.
+    
+    :ivar english_name: ```Canadian Dollar```
+    :vartype english_name: str
+    """
 
-    #: Indian Rupee
-    INR = 24
+    AUD = (21, "Australian Dollar")
+    """The Australian Dollar currency.
+    
+    :ivar english_name: ```Australian Dollar```
+    :vartype english_name: str
+    """
 
-    #: Chilean Peso
-    CLP = 25
+    NZD = (22, "New Zealand Dollar")
+    """The New Zealand Dollar currency.
+    
+    :ivar english_name: ```New Zealand Dollar```
+    :vartype english_name: str
+    """
 
-    #: Peruvian Sol
-    PEN = 26
+    CNY = (23, "Chinese Yuan")
+    """The Chinese Yuan currency.
+    
+    :ivar english_name: ```Chinese Yuan```
+    :vartype english_name: str
+    """
 
-    #: Colombian Peso
-    COP = 27
+    INR = (24, "Indian Rupee")
+    """The Indian Rupee currency.
+    
+    :ivar english_name: ```Indian Rupee```
+    :vartype english_name: str
+    """
 
-    #: South African Rand
-    ZAR = 28
+    CLP = (25, "Chilean Peso")
+    """The Chilean Peso currency.
+    
+    :ivar english_name: ```Chilean Peso```
+    :vartype english_name: str
+    """
 
-    #: Hong Kong Dollar
-    HKD = 29
+    PEN = (26, "Peruvian Sol")
+    """The Peruvian Sol currency.
+    
+    :ivar english_name: ```Peruvian Sol```
+    :vartype english_name: str
+    """
 
-    #: New Taiwan Dollar
-    TWD = 30
+    COP = (27, "Colombian Peso")
+    """The Colombian Peso currency.
+    
+    :ivar english_name: ```Colombian Peso```
+    :vartype english_name: str
+    """
 
-    #: Saudi Riyal
-    SAR = 31
+    ZAR = (28, "South African Rand")
+    """The South African Rand currency.
+    
+    :ivar english_name: ```South African Rand```
+    :vartype english_name: str
+    """
 
-    #: United Arab Emirates Dirham
-    AED = 32
+    HKD = (29, "Hong Kong Dollar")
+    """The Hong Kong Dollar currency.
+    
+    :ivar english_name: ```Hong Kong Dollar```
+    :vartype english_name: str
+    """
 
-    #: Swedish Krona
-    SEK = 33
+    TWD = (30, "New Taiwan Dollar")
+    """The New Taiwan Dollar currency.
+    
+    :ivar english_name: ```New Taiwan Dollar```
+    :vartype english_name: str
+    """
 
-    #: Argentine Peso
-    ARS = 34
+    SAR = (31, "Saudi Riyal")
+    """The Saudi Riyal currency.
+    
+    :ivar english_name: ```Saudi Riyal```
+    :vartype english_name: str
+    """
 
-    #: Israeli New Sheqel
-    ILS = 35
+    AED = (32, "United Arab Emirates Dirham")
+    """The United Arab Emirates Dirham currency.
+    
+    :ivar english_name: ```United Arab Emirates Dirham```
+    :vartype english_name: str
+    """
 
-    #: Belarusian Ruble
-    BYN = 36
+    SEK = (33, "Swedish Krona")
+    """The Swedish Krona currency.
+    
+    :ivar english_name: ```Swedish Krona```
+    :vartype english_name: str
+    """
 
-    #: Kazakhstani Tenge
-    KZT = 37
+    ARS = (34, "Argentine Peso")
+    """The Argentine Peso currency.
+    
+    :ivar english_name: ```Argentine Peso```
+    :vartype english_name: str
+    """
 
-    #: Kuwaiti Dinar
-    KWD = 38
+    ILS = (35, "Israeli New Sheqel")
+    """The Israeli New Sheqel currency.
+    
+    :ivar english_name: ```Israeli New Sheqel```
+    :vartype english_name: str
+    """
 
-    #: Qatari Rial
-    QAR = 39
+    BYN = (36, "Belarusian Ruble")
+    """The Belarusian Ruble currency.
+    
+    :ivar english_name: ```Belarusian Ruble```
+    :vartype english_name: str
+    """
 
-    #: Costa Rican Colón
-    CRC = 40
+    KZT = (37, "Kazakhstani Tenge")
+    """The Kazakhstani Tenge currency.
+    
+    :ivar english_name: ```Kazakhstani Tenge```
+    :vartype english_name: str
+    """
 
-    #: Uruguayan Peso
-    UYU = 41
+    KWD = (38, "Kuwaiti Dinar")
+    """The Kuwaiti Dinar currency.
+    
+    :ivar english_name: ```Kuwaiti Dinar```
+    :vartype english_name: str
+    """
 
-    #: Bulgarian Lev
-    BGN = 42
+    QAR = (39, "Qatari Rial")
+    """The Qatari Rial currency.
+    
+    :ivar english_name: ```Qatari Rial```
+    :vartype english_name: str
+    """
 
-    #: Croatian Kuna
-    HRK = 43
+    CRC = (40, "Costa Rican Colón")
+    """The Costa Rican Colón currency.
+    
+    :ivar english_name: ``Costa Rican Colón``
+    :vartype english_name: str
+    """
 
-    #: Czech Koruna
-    CZK = 44
+    UYU = (41, "Uruguayan Peso")
+    """The Uruguayan Peso currency.
+    
+    :ivar english_name: ``Uruguayan Peso``
+    :vartype english_name: str
+    """
 
-    #: Danish Krone
-    DKK = 45
+    BGN = (42, "Bulgarian Lev")
+    """The Bulgarian Lev currency.
+    
+    :ivar english_name: ``Bulgarian Lev``
+    :vartype english_name: str
+    """
 
-    #: Hungarian Forint
-    HUF = 46
+    HRK = (43, "Croatian Kuna")
+    """The Croatian Kuna currency.
+    
+    :ivar english_name: ``Croatian Kuna``
+    :vartype english_name: str
+    """
 
-    #: Romanian Leu
-    RON = 47
+    CZK = (44, "Czech Koruna")
+    """The Czech Koruna currency.
+    
+    :ivar english_name: ``Czech Koruna``
+    :vartype english_name: str
+    """
+
+    DKK = (45, "Danish Krone")
+    """The Danish Krone currency.
+
+    :ivar english_name: ``Danish Krone``
+    :vartype english_name: str
+    """
+
+    HUF = (46, "Hungarian Forint")
+    """The Hungarian Forint currency.
+    
+    :ivar english_name: ``Hungarian Forint``
+    :vartype english_name: str
+    """
+
+    RON = (47, "Romanian Leu")
+    """The Romanian Leu currency.
+    
+    :ivar english_name: ``Romanian Leu``
+    :vartype english_name: str
+    """
+
+    def __new__(cls, value: int, english_name: str):
+        obj = int.__new__(cls, value)
+        obj._value_ = value
+        obj.english_name = english_name
+        return obj
+
+    @classmethod
+    @lru_cache(maxsize=None)
+    def from_string(cls, currency: str):
+        """Get a currency from a string. The string can be the currencies English name or ISO 4217 code.
+
+        .. versionadded:: 1.3.0
+
+        :param currency: The currency to get in string form.
+        :type currency: str
+        :return: The currency object, or :obj:`None` if the currency was not found.
+        :rtype: Currency or None
+        """
+
+        if not hasattr(cls, "_lookup"):
+            cls._lookup = {
+                key.upper(): curr
+                for curr in cls
+                for key in (
+                    curr.name,
+                    curr.english_name,
+                )
+            }
+
+        return cls._lookup.get(currency.upper())
 
 
-class SteamLegacyCurrency(IntEnum):
-    """Legacy currencies that have been supported by Steam at some point in time, but are no longer."""
+class LegacyCurrency(IntEnum):
+    """Legacy currencies that have been supported by Steam, at some point in time, but are not any longer.
 
-    #: Swedish Krona
-    SEK = 33
+    .. versionadded:: 1.3.0
 
-    #: Belarusian Ruble
-    BYN = 36
+    :ivar english_name: The English name of the currency.
+    :vartype english_name: str
+    """
 
-    #: Bulgarian Lev
-    BGN = 42
+    english_name: str
 
-    #: Croatian Kuna
-    HRK = 43
+    SEK = (33, "Swedish Krona")
+    """The Swedish Krona currency.
+    
+    :ivar english_name: ``Swedish Krona``
+    :vartype english_name: str
+    """
 
-    #: Czech Koruna
-    CZK = 44
+    BYN = (36, "Belarusian Ruble")
+    """The Belarusian Ruble currency.
+    
+    :ivar english_name: ``Belarusian Ruble``
+    :vartype english_name: str
+    """
 
-    #: Danish Krone
-    DKK = 45
+    BGN = (42, "Bulgarian Lev")
+    """The Bulgarian Lev currency.
+    
+    :ivar english_name: ``Bulgarian Lev``
+    :vartype english_name: str
+    """
 
-    #: Hungarian Forint
-    HUF = 46
+    HRK = (43, "Croatian Kuna")
+    """The Croatian Kuna currency.
+    
+    :ivar english_name: ``Croatian Kuna``
+    :vartype english_name: str
+    """
 
-    #: Romanian Leu
-    RON = 47
+    CZK = (44, "Czech Koruna")
+    """The Czech Koruna currency.
+    
+    :ivar english_name: ``Czech Koruna``
+    :vartype english_name: str
+    """
+
+    DKK = (45, "Danish Krone")
+    """The Danish Krone currency.
+    
+    :ivar english_name: ``Danish Krone``
+    :vartype english_name: str
+    """
+
+    HUF = (46, "Hungarian Forint")
+    """The Hungarian Forint currency.
+    
+    :ivar english_name: ``Hungarian Forint``
+    :vartype english_name: str
+    """
+
+    RON = (47, "Romanian Leu")
+    """The Romanian Leu currency.
+    
+    :ivar english_name: ``Romanian Leu``
+    :vartype english_name: str
+    """
+
+    def __new__(cls, value: int, english_name: str):
+        obj = int.__new__(cls, value)
+        obj._value_ = value
+        obj.english_name = english_name
+        return obj
+
+    @classmethod
+    @lru_cache(maxsize=None)
+    def from_string(cls, currency: str):
+        """Get a legacy currency from a string. The string can be the currencies English name or ISO 4217 code.
+
+        .. versionadded:: 1.3.0
+
+        :param currency: The legacy currency to get in string form.
+        :type currency: str
+        :return: The legacy currency object, or :obj:`None` if the currency was not found.
+        :rtype: LegacyCurrency or None
+        """
+
+        if not hasattr(cls, "_lookup"):
+            cls._lookup = {
+                key.upper(): legacy_curr
+                for legacy_curr in cls
+                for key in (
+                    legacy_curr.name,
+                    legacy_curr.english_name,
+                )
+            }
+
+        return cls._lookup.get(currency.upper())

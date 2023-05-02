@@ -1,4 +1,4 @@
-from .currencies import SteamCurrency
+from .currencies import Currency
 from .exceptions import InvalidItemOrAppIDException, TooManyRequestsException
 
 from typing import Callable, Optional, Union
@@ -63,7 +63,7 @@ def _request(url: str, payload: dict) -> tuple[int, dict]:
 def _request_overview(
     app_id: int,
     market_hash_name: str,
-    currency: SteamCurrency,
+    currency: Currency,
     raise_exception: bool = True,
     rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
 ) -> dict[str, Union[bool, str]]:
@@ -86,14 +86,14 @@ def exponential_backoff_strategy(
 ) -> tuple[bool, float]:
     """Default rate limit handler for the Steam Community Market API.
 
+    .. versionadded:: 1.3.0
+
     :param retries: The number of retries that have been attempted.
     :type retries: int
     :param max_retries: The maximum number of retries to attempt. Defaults to 5.
     :type max_retries: int
     :return: A tuple containing a boolean indicating whether the request should be retried and the number of seconds to sleep for.
     :rtype: tuple[bool, float]
-
-    .. versionadded:: 1.3.0
     """
     if retries >= max_retries:
         return (False, 0)

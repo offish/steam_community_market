@@ -1,4 +1,4 @@
-from .currencies import SteamLegacyCurrency
+from .currencies import LegacyCurrency
 from .enums import AppID
 
 from typing import Any
@@ -9,14 +9,14 @@ import requests
 class InvalidItemOrAppIDException(Exception):
     """Exception raised when an item or app ID, or the combination of the two, is considered to be invalid by the Steam Community Market.
 
+    .. versionadded:: 1.3.0
+
     :param app_id: The app ID the item belongs to.
     :type app_id: int or AppID
     :param market_hash_name: The market hash name of the item.
     :type market_hash_name: str
     :param message_format: The format of the exception message. Defaults to ``Item "{}" with app ID "{}" is considered invalid by the Steam Community Market.``.
     :type message_format: str
-
-    .. versionadded:: 1.3.0
     """
 
     def __init__(
@@ -32,12 +32,12 @@ class InvalidItemOrAppIDException(Exception):
 class InvalidLanguageException(Exception):
     """Exception raised when a language is considered to be invalid by the Steam Community Market.
 
+    .. versionadded:: 1.3.0
+
     :param language: The unsupported invalid language.
     :type language: Any
     :param message_format: The format of the exception message. Defaults to ``Language "{}" is considered invalid by the Steam Community Market.``.
     :type message_format: str
-
-    .. versionadded:: 1.3.0
     """
 
     def __init__(
@@ -52,12 +52,12 @@ class InvalidLanguageException(Exception):
 class InvalidCurrencyException(Exception):
     """Exception raised when a currency is considered to be invalid by the Steam Community Market.
 
+    .. versionadded:: 1.3.0
+
     :param currency: The unsupported invalid currency.
     :type currency: Any
     :param message_format: The format of the exception message. Defaults to ``Currency "{}" is considered invalid by the Steam Community Market.``.
     :type message_format: str
-
-    .. versionadded:: 1.3.0
     """
 
     def __init__(
@@ -72,17 +72,17 @@ class InvalidCurrencyException(Exception):
 class LegacyCurrencyException(Exception):
     """Exception raised when a currency is not supported by the Steam Community Market anymore.
 
+    .. versionadded:: 1.3.0
+
     :param currency: The unsupported legacy currency.
-    :type currency: SteamLegacyCurrency
+    :type currency: LegacyCurrency
     :param message_format: The format of the exception message. Defaults to ``Currency "{}" is not supported by the Steam Community Market anymore.``.
     :type message_format: str
-
-    .. versionadded:: 1.3.0
     """
 
     def __init__(
         self,
-        currency: SteamLegacyCurrency,
+        currency: LegacyCurrency,
         message_format: str = 'Currency "{}" is not supported by the Steam Community Market anymore.',
     ) -> None:
         message = message_format.format(currency.name)
@@ -92,10 +92,10 @@ class LegacyCurrencyException(Exception):
 class TooManyRequestsException(requests.exceptions.RequestException):
     """Exception raised when too many requests are sent to the Steam Community Market.
 
+    .. versionadded:: 1.3.0
+
     :param message: The exception message. Defaults to ``Too many requests have been sent to the Steam Community Market.``.
     :type message_format: str
-
-    .. versionadded:: 1.3.0
     """
 
     def __init__(

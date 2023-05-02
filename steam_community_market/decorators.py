@@ -1,5 +1,5 @@
-from .currencies import SteamCurrency, SteamLegacyCurrency
-from .enums import AppID, SteamLanguage
+from .currencies import Currency, LegacyCurrency
+from .enums import AppID, Language
 from .exceptions import (
     InvalidCurrencyException,
     InvalidLanguageException,
@@ -18,29 +18,32 @@ def _sanitize_app_id_value(
 
 
 def _sanitize_currency_value(
-    value: Optional[Union[SteamCurrency, SteamLegacyCurrency, int, str]]
-) -> SteamCurrency:
-    if isinstance(value, (SteamCurrency, SteamLegacyCurrency)):
-        if isinstance(value, SteamLegacyCurrency):
+    value: Union[Currency, LegacyCurrency, int, str]
+) -> Currency:
+    if isinstance(value, (Currency, LegacyCurrency)):
+        if isinstance(value, LegacyCurrency):
             raise LegacyCurrencyException(value)
 
         return value
 
     if isinstance(value, str):
-        value = value.upper()
-
-    try:
-        if isinstance(value, int):
-            value = SteamCurrency(value)
-
-        elif value in SteamLegacyCurrency:
+        if LegacyCurrency.from_string(value) is not None:
             raise LegacyCurrencyException(value)
 
-        else:
-            value = SteamCurrency[value]
+        currency = Currency.from_string(value)
+        if currency is None:
+            raise InvalidCurrencyException(value)
 
-    except KeyError as e:
-        raise InvalidCurrencyException(value) from e
+        return currency
+
+    if isinstance(value, int):
+        if value in LegacyCurrency:
+            raise LegacyCurrencyException(value)
+
+        try:
+            value = Currency(value)
+        except KeyError as e:
+            raise InvalidCurrencyException(value) from e
 
     return value
 
@@ -51,13 +54,11 @@ def _sanitize_items_dict(
     return {int(app_id): list(items) for app_id, items in value.items()}
 
 
-def _sanitize_language_value(
-    value: Optional[Union[SteamLanguage, str]]
-) -> SteamLanguage:
-    if isinstance(value, SteamLanguage):
+def _sanitize_language_value(value: Union[Language, str]) -> Language:
+    if isinstance(value, Language):
         return value
 
-    lanuage = SteamLanguage.from_string(value)
+    lanuage = Language.from_string(value)
     if lanuage is None:
         raise InvalidLanguageException(value)
 
@@ -129,12 +130,12 @@ def _typecheck_value(value: Any, expected_type: Any) -> bool:
 def sanitized(func: Callable[..., Any]) -> Callable[..., Any]:
     """Decorator to sanitize arguments before passing them to a function.
 
+    .. versionadded:: 1.3.0
+
     :param sanitize_args: The names of the arguments to sanitize, if not specified all known arguments will be sanitized.
     :type sanitize_args: str
     :return: The decorator function.
     :rtype: Callable[..., Any]
-
-    .. versionadded:: 1.3.0
     """
 
     @wraps(func)
@@ -162,12 +163,12 @@ def sanitized(func: Callable[..., Any]) -> Callable[..., Any]:
 def typechecked(func: Callable[..., Any]) -> Callable[..., Any]:
     """Decorator to typecheck arguments before passing them to a function.
 
+    .. versionadded:: 1.3.0
+
     :param func: The function to decorate.
     :type func: Callable[..., Any]
     :return: The decorated function.
     :rtype: Callable[..., Any]
-
-    .. versionadded:: 1.3.0
     """
 
     @wraps(func)

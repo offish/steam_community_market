@@ -63,6 +63,10 @@ root_doc = "index"
 
 # -- Options for HTML output -------------------------------------------------
 
+html_favicon = "_static/favicon.ico"
+
+html_logo = "_static/logo.png"
+
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
@@ -73,12 +77,13 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-autodoc_member_order = "bysource"
-
 html_theme_options = {
     "collapse_navigation": False,
     "navigation_depth": 2,
     "includehidden": True,
+    "logo_only": True,
     "prev_next_buttons_location": None,
     "style_nav_header_background": "#2a475e",
 }
+
+autodoc_member_order = "bysource"

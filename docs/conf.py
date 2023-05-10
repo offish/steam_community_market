@@ -86,4 +86,7 @@ html_theme_options = {
     "style_nav_header_background": "#2a475e",
 }
 
+napoleon_numpy_docstring = False
+napoleon_use_ivar = True
+
 autodoc_member_order = "bysource"

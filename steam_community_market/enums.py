@@ -44,12 +44,14 @@ class Language(Enum):
 
     .. versionadded:: 1.3.0
 
-    :ivar native_name: The native name of the language.
-    :vartype native_name: str
-    :ivar english_name: The English name of the language.
-    :vartype english_name: str
-    :ivar code: The language code of the language.
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        The native name of the language.
+    english_name : str
+        The English name of the language.
+    code : str
+        The language code of the language.
     """
 
     native_name: str
@@ -59,320 +61,378 @@ class Language(Enum):
     ARABIC = ("العربية", "arabic", "ar")
     """The Arabic language.
     
-    :ivar native_name: ``العربية``
-    :vartype native_name: str
-    :ivar english_name: ``arabic``
-    :vartype english_name: str
-    :ivar code: ``ar``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``العربية``
+    english_name : str
+        ``arabic``
+    code : str
+        ``ar``
     """
 
     BULGARIAN = ("български език", "bulgarian", "bg")
     """The Bulgarian language.
     
-    :ivar native_name: ``български език``
-    :vartype native_name: str
-    :ivar english_name: ``bulgarian``
-    :vartype english_name: str
-    :ivar code: ``bg``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``български език``
+    english_name : str
+        ``bulgarian``
+    code : str
+        ``bg``
     """
 
     CHINESE_SIMPLIFIED = ("简体中文", "schinese", "zh-CN")
     """The Chinese (Simplified) language.
     
-    :ivar native_name: ``简体中文``
-    :vartype native_name: str
-    :ivar english_name: ``schinese``
-    :vartype english_name: str
-    :ivar code: ``zh-CN``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``简体中文``
+    english_name : str
+        ``schinese``
+    code : str
+        ``zh-CN``
     """
 
     CHINESE_TRADITIONAL = ("繁體中文", "tchinese", "zh-TW")
     """The Chinese (Traditional) language.
     
-    :ivar native_name: ``繁體中文``
-    :vartype native_name: str
-    :ivar english_name: ``tchinese``
-    :vartype english_name: str
-    :ivar code: ``zh-TW``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``繁體中文``
+    english_name : str
+        ``tchinese``
+    code : str
+        ``zh-TW``
     """
 
     CZECH = ("čeština", "czech", "cs")
     """The Czech language.
     
-    :ivar native_name: ``čeština``
-    :vartype native_name: str
-    :ivar english_name: ``czech``
-    :vartype english_name: str
-    :ivar code: ``cs``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``čeština``
+    english_name : str
+        ``czech``
+    code : str
+        ``cs``
     """
 
     DANISH = ("Dansk", "danish", "da")
     """The Danish language.
     
-    :ivar native_name: ``Dansk``
-    :vartype native_name: str
-    :ivar english_name: ``danish``
-    :vartype english_name: str
-    :ivar code: ``da``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Dansk``
+    english_name : str
+        ``danish``
+    code : str
+        ``da``
     """
 
     DUTCH = ("Nederlands", "dutch", "nl")
     """The Dutch language.
     
-    :ivar native_name: ``Nederlands``
-    :vartype native_name: str
-    :ivar english_name: ``dutch``
-    :vartype english_name: str
-    :ivar code: ``nl``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Nederlands``
+    english_name : str
+        ``dutch``
+    code : str
+        ``nl``
     """
 
     ENGLISH = ("English", "english", "en")
     """The English language.
     
-    :ivar native_name: ``English``
-    :vartype native_name: str
-    :ivar english_name: ``english``
-    :vartype english_name: str
-    :ivar code: ``en``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``English``
+    english_name : str
+        ``english``
+    code : str
+        ``en``
     """
 
     FINNISH = ("Suomi", "finnish", "fi")
     """The Finnish language.
     
-    :ivar native_name: ``Suomi``
-    :vartype native_name: str
-    :ivar english_name: ``finnish``
-    :vartype english_name: str
-    :ivar code: ``fi``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Suomi``
+    english_name : str
+        ``finnish``
+    code : str
+        ``fi``
     """
 
     FRENCH = ("Français", "french", "fr")
     """The French language.
     
-    :ivar native_name: ``Français``
-    :vartype native_name: str
-    :ivar english_name: ``french``
-    :vartype english_name: str
-    :ivar code: ``fr``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Français``
+    english_name : str
+        ``french``
+    code : str
+        ``fr``
     """
 
     GERMAN = ("Deutsch", "german", "de")
     """The German language.
     
-    :ivar native_name: ``Deutsch``
-    :vartype native_name: str
-    :ivar english_name: ``german``
-    :vartype english_name: str
-    :ivar code: ``de``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Deutsch``
+    english_name : str
+        ``german``
+    code : str
+        ``de``
     """
 
     GREEK = ("Ελληνικά", "greek", "el")
     """The Greek language.
     
-    :ivar native_name: ``Ελληνικά``
-    :vartype native_name: str
-    :ivar english_name: ``greek``
-    :vartype english_name: str
-    :ivar code: ``el``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Ελληνικά``
+    english_name : str
+        ``greek``
+    code : str
+        ``el``
     """
 
     HUNGARIAN = ("Magyar", "hungarian", "hu")
     """The Hungarian language.
     
-    :ivar native_name: ``Magyar``
-    :vartype native_name: str
-    :ivar english_name: ``hungarian``
-    :vartype english_name: str
-    :ivar code: ``hu``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Magyar``
+    english_name : str
+        ``hungarian``
+    code : str
+        ``hu``
     """
 
     ITALIAN = ("Italiano", "italian", "it")
     """The Italian language.
     
-    :ivar native_name: ``Italiano``
-    :vartype native_name: str
-    :ivar english_name: ``italian``
-    :vartype english_name: str
-    :ivar code: ``it``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Italiano``
+    english_name : str
+        ``italian``
+    code : str
+        ``it``
     """
 
     JAPANESE = ("日本語", "japanese", "ja")
     """The Japanese language.
     
-    :ivar native_name: ``日本語``
-    :vartype native_name: str
-    :ivar english_name: ``japanese``
-    :vartype english_name: str
-    :ivar code: ``ja``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``日本語``
+    english_name : str
+        ``japanese``
+    code : str
+        ``ja``
     """
 
     KOREAN = ("한국어", "koreana", "ko")
     """The Korean language.
     
-    :ivar native_name: ``한국어``
-    :vartype native_name: str
-    :ivar english_name: ``koreana``
-    :vartype english_name: str
-    :ivar code: ``ko``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``한국어``
+    english_name : str
+        ``koreana``
+    code : str
+        ``ko``
     """
 
     NORWEGIAN = ("Norsk", "norwegian", "no")
     """The Norwegian language.
     
-    :ivar native_name: ``Norsk``
-    :vartype native_name: str
-    :ivar english_name: ``norwegian``
-    :vartype english_name: str
-    :ivar code: ``no``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Norsk``
+    english_name : str
+        ``norwegian``
+    code : str
+        ``no``
     """
 
     POLISH = ("Polski", "polish", "pl")
     """The Polish language.
     
-    :ivar native_name: ``Polski``
-    :vartype native_name: str
-    :ivar english_name: ``polish``
-    :vartype english_name: str
-    :ivar code: ``pl``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Polski``
+    english_name : str
+        ``polish``
+    code : str
+        ``pl``
     """
 
     PORTUGUESE = ("Português", "portuguese", "pt")
     """The Portuguese language.
     
-    :ivar native_name: ``Português``
-    :vartype native_name: str
-    :ivar english_name: ``portuguese``
-    :vartype english_name: str
-    :ivar code: ``pt``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Português``
+    english_name : str
+        ``portuguese``
+    code : str
+        ``pt``
     """
 
     PORTUGUESE_BRAZIL = ("Português-Brasil", "brazilian", "pt-BR")
     """The Brazilian Portuguese language.
     
-    :ivar native_name: ``Português-Brasil``
-    :vartype native_name: str
-    :ivar english_name: ``brazilian``
-    :vartype english_name: str
-    :ivar code: ``pt-BR``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Português-Brasil``
+    english_name : str
+        ``brazilian``
+    code : str
+        ``pt-BR``
     """
 
     ROMANIAN = ("Română", "romanian", "ro")
     """The Romanian language.
     
-    :ivar native_name: ``Română``
-    :vartype native_name: str
-    :ivar english_name: ``romanian``
-    :vartype english_name: str
-    :ivar code: ``ro``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Română``
+    english_name : str
+        ``romanian``
+    code : str
+        ``ro``
     """
 
     RUSSIAN = ("Русский", "russian", "ru")
     """The Russian language.
     
-    :ivar native_name: ``Русский``
-    :vartype native_name: str
-    :ivar english_name: ``russian``
-    :vartype english_name: str
-    :ivar code: ``ru``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Русский``
+    english_name : str
+        ``russian``
+    code : str
+        ``ru``
     """
 
     SPANISH_SPAIN = ("Español-España", "spanish", "es")
     """The Spanish language.
     
-    :ivar native_name: ``Español-España``
-    :vartype native_name: str
-    :ivar english_name: ``spanish``
-    :vartype english_name: str
-    :ivar code: ``es``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Español-España``
+    english_name : str
+        ``spanish``
+    code : str
+        ``es``
     """
 
     SPANISH_LATIN_AMERICA = ("Español-Latinoamérica", "latam", "es-419")
     """The Latin American Spanish language.
     
-    :ivar native_name: ``Español-Latinoamérica``
-    :vartype native_name: str
-    :ivar english_name: ``latam``
-    :vartype english_name: str
-    :ivar code: ``es-419``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Español-Latinoamérica``
+    english_name : str
+        ``latam``
+    code : str
+        ``es-419``
     """
 
     SWEDISH = ("Svenska", "swedish", "sv")
     """The Swedish language.
     
-    :ivar native_name: ``Svenska``
-    :vartype native_name: str
-    :ivar english_name: ``swedish``
-    :vartype english_name: str
-    :ivar code: ``sv``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Svenska``
+    english_name : str
+        ``swedish``
+    code : str
+        ``sv``
     """
 
     THAI = ("ไทย", "thai", "th")
     """The Thai language.
     
-    :ivar native_name: ``ไทย``
-    :vartype native_name: str
-    :ivar english_name: ``thai``
-    :vartype english_name: str
-    :ivar code: ``th``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``ไทย``
+    english_name : str
+        ``thai``
+    code : str
+        ``th``
     """
 
     TURKISH = ("Türkçe", "turkish", "tr")
     """The Turkish language.
     
-    :ivar native_name: ``Türkçe``
-    :vartype native_name: str
-    :ivar english_name: ``turkish``
-    :vartype english_name: str
-    :ivar code: ``tr``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Türkçe``
+    english_name : str
+        ``turkish``
+    code : str
+        ``tr``
     """
 
     UKRAINIAN = ("Українська", "ukrainian", "uk")
     """The Ukrainian language.
     
-    :ivar native_name: ``Українська``
-    :vartype native_name: str
-    :ivar english_name: ``ukrainian``
-    :vartype english_name: str
-    :ivar code: ``uk``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Українська``
+    english_name : str
+        ``ukrainian``
+    code : str
+        ``uk``
     """
 
     VIETNAMESE = ("Tiếng Việt", "vietnamese", "vn")
     """The Vietnamese language.
     
-    :ivar native_name: ``Tiếng Việt``
-    :vartype native_name: str
-    :ivar english_name: ``vietnamese``
-    :vartype english_name: str
-    :ivar code: ``vn``
-    :vartype code: str
+    Attributes
+    ----------
+    native_name : str
+        ``Tiếng Việt``
+    english_name : str
+        ``vietnamese``
+    code : str
+        ``vn``
     """
 
     def __new__(cls, native_name: str, english_name: str, code: str):
@@ -390,10 +450,15 @@ class Language(Enum):
 
         .. versionadded:: 1.3.0
 
-        :param language: The language to get in string form.
-        :type language: str
-        :return: The language object, or :obj:`None` if the language was not found.
-        :rtype: Language or None
+        Parameters
+        ----------
+        language : str
+            The language to get in string form.
+
+        Returns
+        -------
+        Language or None
+            The language object, or None if the language was not found.
         """
 
         if not hasattr(cls, "_lookup"):

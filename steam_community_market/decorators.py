@@ -8,7 +8,7 @@ from .exceptions import (
 
 from functools import wraps
 from inspect import signature
-from typing import Any, Callable, Optional, Union, get_args, get_origin
+from typing import Any, Callable, Union, get_args, get_origin
 
 
 def _sanitize_app_id_value(
@@ -132,10 +132,15 @@ def sanitized(func: Callable[..., Any]) -> Callable[..., Any]:
 
     .. versionadded:: 1.3.0
 
-    :param sanitize_args: The names of the arguments to sanitize, if not specified all known arguments will be sanitized.
-    :type sanitize_args: str
-    :return: The decorator function.
-    :rtype: Callable[..., Any]
+    Parameters
+    ----------
+    sanitize_args : str
+        The names of the arguments to sanitize, if not specified all known arguments will be sanitized.
+
+    Returns
+    -------
+    Callable[..., Any]
+        The decorator function.
     """
 
     @wraps(func)
@@ -165,10 +170,15 @@ def typechecked(func: Callable[..., Any]) -> Callable[..., Any]:
 
     .. versionadded:: 1.3.0
 
-    :param func: The function to decorate.
-    :type func: Callable[..., Any]
-    :return: The decorated function.
-    :rtype: Callable[..., Any]
+    Parameters
+    ----------
+    func : Callable[..., Any]
+        The function to decorate.
+
+    Returns
+    -------
+    Callable[..., Any]
+        The decorated function.
     """
 
     @wraps(func)

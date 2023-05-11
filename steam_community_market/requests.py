@@ -88,12 +88,17 @@ def exponential_backoff_strategy(
 
     .. versionadded:: 1.3.0
 
-    :param retries: The number of retries that have been attempted.
-    :type retries: int
-    :param max_retries: The maximum number of retries to attempt. Defaults to 5.
-    :type max_retries: int
-    :return: A tuple containing a boolean indicating whether the request should be retried and the number of seconds to sleep for.
-    :rtype: tuple[bool, float]
+    Parameters
+    ----------
+    retries : int
+        The number of retries that have been attempted.
+    max_retries : int
+        The maximum number of retries to attempt. Defaults to 5.
+
+    Returns
+    -------
+    tuple[bool, float]
+        A tuple containing a boolean indicating whether the request should be retried and the number of seconds to sleep for.
     """
     if retries >= max_retries:
         return (False, 0)

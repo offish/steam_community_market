@@ -69,12 +69,17 @@ def _sanitize_market_hash_name_value(value: str) -> str:
     return value.replace("/", "-")
 
 
+def _sanitize_market_hash_names_value(value: list[str]) -> list[str]:
+    return [_sanitize_market_hash_name_value(item) for item in value]
+
+
 _sanitize_funcs = {
     "app_id": _sanitize_app_id_value,
     "currency": _sanitize_currency_value,
     "items_dict": _sanitize_items_dict,
     "language": _sanitize_language_value,
     "market_hash_name": _sanitize_market_hash_name_value,
+    "market_hash_names": _sanitize_market_hash_names_value,
 }
 
 

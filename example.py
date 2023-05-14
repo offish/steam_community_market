@@ -30,10 +30,10 @@ print(
 )
 # get_overview:
 # {
-#   'success': True,
-#   'lowest_price': '2,22€',
-#   'volume': '18,015',
-#   'median_price': '2,25€'
+#   "success": true,
+#   "lowest_price": 2.1,
+#   "volume": 24675,
+#   "median_price": 2.1
 # }
 
 
@@ -53,21 +53,21 @@ print(
 # {
 #   "Mann Co. Supply Crate Key": {
 #     "success": true,
-#     "lowest_price": "2,24€",
-#     "volume": "18,015",
-#     "median_price": "2,25€"
+#     "lowest_price": 2.1,
+#     "volume": 24675,
+#     "median_price": 2.1
 #   },
 #   "Name Tag": {
 #     "success": true,
-#     "lowest_price": "0,37€",
-#     "volume": "1,114",
-#     "median_price": "0,38€"
+#     "lowest_price": 0.46,
+#     "volume": 726,
+#     "median_price": 0.45
 #   },
 #   "The Festivizer": {
 #     "success": true,
-#     "lowest_price": "1,26€",
-#     "volume": "510",
-#     "median_price": "1,25€"
+#     "lowest_price": 1.24,
+#     "volume": 336,
+#     "median_price": 1.07
 #   }
 # }
 
@@ -88,26 +88,26 @@ print(
 # {
 #   "Mann Co. Supply Crate Key": {
 #     "success": true,
-#     "lowest_price": "2,23€",
-#     "volume": "18,015",
-#     "median_price": "2,25€"
+#     "lowest_price": 2.1,
+#     "volume": 24675,
+#     "median_price": 2.1
 #   },
 #   "AK-47 | Redline (Field-Tested)": {
 #     "success": true,
-#     "lowest_price": "23,77€",
-#     "volume": "447",
-#     "median_price": "23,03€"
+#     "lowest_price": 21.77,
+#     "volume": 399,
+#     "median_price": 21.8
 #   },
 #   "Wood": {
 #     "success": true,
-#     "lowest_price": "0,35€",
-#     "volume": "1,329",
-#     "median_price": "0,34€"
+#     "lowest_price": 0.32,
+#     "volume": 816,
+#     "median_price": 0.3
 #   }
 # }
 
 # get_overviews_from_dict
-market_hash_names = {
+market_items_dict = {
     AppID.TF2: [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"],
     730: ["AK-47 | Redline (Field-Tested)", "M4A4 | Howl (Field-Tested)"],
     252490: ["Weapon Stock", "Weapon Grip"],
@@ -116,7 +116,7 @@ market_hash_names = {
 print(
     "get_overviews_from_dict:",
     json.dumps(
-        market.get_overviews_from_dict(market_hash_names), indent=2, ensure_ascii=False
+        market.get_overviews_from_dict(market_items_dict), indent=2, ensure_ascii=False
     ),
     sep=os.linesep,
     end=os.linesep * 2,
@@ -127,33 +127,37 @@ print(
 # {
 #   "Mann Co. Supply Crate Key": {
 #     "success": true,
-#     "lowest_price": "2,25€",
-#     "volume": "18,015",
-#     "median_price": "2,25€"
+#     "lowest_price": 2.1,
+#     "volume": 24675,
+#     "median_price": 2.1
 #   },
 #   "Name Tag": {
 #     "success": true,
-#     "lowest_price": "0,38€",
-#     "volume": "1,114",
-#     "median_price": "0,38€"
+#     "lowest_price": 0.46,
+#     "volume": 726,
+#     "median_price": 0.45
 #   },
 #   "The Festivizer": {
 #     "success": true,
-#     "lowest_price": "1,26€",
-#     "volume": "510",
-#     "median_price": "1,25€"
+#     "lowest_price": 1.24,
+#     "volume": 336,
+#     "median_price": 1.07
 #   },
 #   "AK-47 | Redline (Field-Tested)": {
 #     "success": true,
-#     "lowest_price": "23,--€",
-#     "volume": "447",
-#     "median_price": "23,03€"
+#     "lowest_price": 21.77,
+#     "volume": 399,
+#     "median_price": 21.8
 #   },
 #   "M4A4 | Howl (Field-Tested)": {
 #     "success": true
 #   },
-#   "Weapon Stock": null,
-#   "Weapon Grip": null
+#   "Weapon Stock": {
+#     "success": false
+#   },
+#   "Weapon Grip": {
+#     "success": false
+#   }
 # }
 
 # get_lowest_price (get_price) - Exception
@@ -183,7 +187,7 @@ print(
 # Item "Weapon Barrel" with app ID "730" is considered invalid by the Steam Community Market.
 #
 # get_price (lowest_price):
-# 6.33
+# 6.6
 
 
 # get_median_price (get_price)
@@ -201,26 +205,68 @@ print(
 )
 # 252490 - Rust's App ID
 # get_median_price:
-# 6.33
+# 6.7
 #
 # get_price (median_price):
-# 12.26
+# 11.49
 
+# get_prices (1)
+market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"]
 
-# get_prices
 print(
-    "get_prices:",
+    "get_prices (1):",
     json.dumps(
-        market.get_prices(440, MANN_CO_SUPPLY_CRATE_KEY), indent=2, ensure_ascii=False
+        market.get_prices(AppID.TF2, market_hash_names),
+        indent=2,
+        ensure_ascii=False,
     ),
     sep=os.linesep,
     end=os.linesep * 2,
 )
-# 440 - Team Fortress 2's App ID
-# get_prices:
+# get_prices (1):
 # {
-#   'lowest_price': 2.22,
-#   'median_price': 2.25
+#   "Mann Co. Supply Crate Key": {
+#     "lowest_price": 2.1,
+#     "median_price": 2.1
+#   },
+#   "Name Tag": {
+#     "lowest_price": 0.46,
+#     "median_price": 0.45
+#   },
+#   "The Festivizer": {
+#     "lowest_price": 1.24,
+#     "median_price": 1.07
+#   }
+# }
+
+# get_prices (2)
+app_ids = [AppID.TF2, 730, AppID.RUST]
+market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "AK-47 | Redline (Field-Tested)", "Wood"]
+
+print(
+    "get_prices (2):",
+    json.dumps(
+        market.get_prices(app_ids, market_hash_names),
+        indent=2,
+        ensure_ascii=False,
+    ),
+    sep=os.linesep,
+    end=os.linesep * 2,
+)
+# get_prices (2):
+# {
+#   "Mann Co. Supply Crate Key": {
+#     "lowest_price": 2.1,
+#     "median_price": 2.1
+#   },
+#   "AK-47 | Redline (Field-Tested)": {
+#     "lowest_price": 21.77,
+#     "median_price": 21.8
+#   },
+#   "Wood": {
+#     "lowest_price": 0.32,
+#     "median_price": 0.3
+#   }
 # }
 
 # get_volume
@@ -233,4 +279,4 @@ print(
     end=os.linesep * 2,
 )
 # get_volume:
-# 4982
+# 3430

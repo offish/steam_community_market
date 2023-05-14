@@ -48,7 +48,7 @@ def _sanitize_currency_value(
     return value
 
 
-def _sanitize_items_dict(
+def _sanitize_market_items_dict(
     value: dict[Union[AppID, int], list[str]]
 ) -> dict[int, list[str]]:
     return {int(app_id): list(items) for app_id, items in value.items()}
@@ -73,18 +73,37 @@ def _sanitize_market_hash_names_value(value: list[str]) -> list[str]:
     return [_sanitize_market_hash_name_value(item) for item in value]
 
 
-_sanitize_funcs = {
+def _sanitize_price_type_value(value: Union[str, tuple[str, ...]]) -> tuple[str, ...]:
+    valid_price_types = ("lowest_price", "median_price")
+    if isinstance(value, str):
+        if value not in valid_price_types:
+            raise ValueError(
+                f"Invalid price type: {value}. Valid price types: {valid_price_types}"
+            )
+
+        return (value,)
+
+    if any(price_type not in valid_price_types for price_type in value):
+        raise ValueError(
+            f"Invalid price type: {value}. Valid price types: {valid_price_types}"
+        )
+
+    return value
+
+
+_SANITIZE_FUNCS = {
     "app_id": _sanitize_app_id_value,
     "currency": _sanitize_currency_value,
-    "items_dict": _sanitize_items_dict,
+    "market_items_dict": _sanitize_market_items_dict,
     "language": _sanitize_language_value,
     "market_hash_name": _sanitize_market_hash_name_value,
     "market_hash_names": _sanitize_market_hash_names_value,
+    "price_type": _sanitize_price_type_value,
 }
 
 
 def _sanitize_value(value: Any, param_name: str) -> Any:
-    sanitize_func = _sanitize_funcs.get(param_name)
+    sanitize_func = _SANITIZE_FUNCS.get(param_name)
     return sanitize_func(value) if sanitize_func is not None else value
 
 
@@ -108,7 +127,7 @@ def _typecheck_tuple_value(value: tuple, expected_type_args: tuple[Any, ...]) ->
     return all(_typecheck_value(x, t) for x, t in zip(value, expected_type_args))
 
 
-_typecheck_funcs = {
+_TYPECHECK_FUNCS = {
     dict: _typecheck_dict_value,
     list: _typecheck_list_value,
     set: _typecheck_set_value,
@@ -126,7 +145,7 @@ def _typecheck_value(value: Any, expected_type: Any) -> bool:
     if origin is Union:
         return any(_typecheck_value(value, arg) for arg in args)
 
-    if check_func := _typecheck_funcs.get(origin):
+    if check_func := _TYPECHECK_FUNCS.get(origin):
         return check_func(value, args)
 
     return False
@@ -152,7 +171,7 @@ def sanitized(func: Callable[..., Any]) -> Callable[..., Any]:
     def wrapper(*args, **kwargs):
         sig = signature(func)
         param_names = list(sig.parameters.keys())
-        sanitize_param_names = list(_sanitize_funcs.keys())
+        sanitize_param_names = list(_SANITIZE_FUNCS.keys())
 
         args_list = list(args)
 

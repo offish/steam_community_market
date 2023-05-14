@@ -37,6 +37,70 @@ print(
 # }
 
 
+# get_lowest_price (get_price) - Exception
+try:
+    print(
+        "get_lowest_price:",
+        market.get_lowest_price(AppID.CSGO, "Weapon Barrel"),
+        sep=os.linesep,
+        end=os.linesep * 2,
+    )
+except InvalidItemOrAppIDException as e:
+    print(
+        "[InvalidItemOrAppIDException] get_lowest_price:",
+        e,
+        sep=os.linesep,
+        end=os.linesep * 2,
+    )
+
+print(
+    "get_price (lowest_price):",
+    market.get_price(252490, "No Mercy AK47", "lowest_price"),
+    sep=os.linesep,
+    end=os.linesep * 2,
+)
+# 252490 - Rust's App ID
+# [InvalidItemOrAppIDException] get_lowest_price:
+# Item "Weapon Barrel" with app ID "730" is considered invalid by the Steam Community Market.
+#
+# get_price (lowest_price):
+# 6.6
+
+
+# get_median_price (get_price)
+print(
+    "get_median_price:",
+    market.get_median_price(252490, "No Mercy AK47"),
+    sep=os.linesep,
+    end=os.linesep * 2,
+)
+print(
+    "get_price (median_price):",
+    market.get_price(AppID.RUST, "Weapon Barrel", "median_price"),
+    sep=os.linesep,
+    end=os.linesep * 2,
+)
+# 252490 - Rust's App ID
+# get_median_price:
+# 6.7
+#
+# get_price (median_price):
+# 11.49
+
+
+# get_volume
+# Getting information about "Steam" items is kind of weird, you need to look at its URL.
+# IDF (CSGO Trading Card), you need to add 730- to. So it would be "730-IDF".
+print(
+    "get_volume:",
+    market.get_volume(AppID.STEAM, "753-Sack of Gems"),
+    sep=os.linesep,
+    end=os.linesep * 2,
+)
+# get_volume:
+# 3430
+
+
 # get_overviews (1)
 market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"]
 print(
@@ -70,6 +134,7 @@ print(
 #     "median_price": 1.07
 #   }
 # }
+
 
 # get_overviews (2)
 app_ids = [AppID.TF2, 730, AppID.RUST]
@@ -105,6 +170,7 @@ print(
 #     "median_price": 0.3
 #   }
 # }
+
 
 # get_overviews_from_dict
 market_items_dict = {
@@ -160,55 +226,6 @@ print(
 #   }
 # }
 
-# get_lowest_price (get_price) - Exception
-try:
-    print(
-        "get_lowest_price:",
-        market.get_lowest_price(AppID.CSGO, "Weapon Barrel"),
-        sep=os.linesep,
-        end=os.linesep * 2,
-    )
-except InvalidItemOrAppIDException as e:
-    print(
-        "[InvalidItemOrAppIDException] get_lowest_price:",
-        e,
-        sep=os.linesep,
-        end=os.linesep * 2,
-    )
-
-print(
-    "get_price (lowest_price):",
-    market.get_price(252490, "No Mercy AK47", "lowest_price"),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
-# 252490 - Rust's App ID
-# [InvalidItemOrAppIDException] get_lowest_price:
-# Item "Weapon Barrel" with app ID "730" is considered invalid by the Steam Community Market.
-#
-# get_price (lowest_price):
-# 6.6
-
-
-# get_median_price (get_price)
-print(
-    "get_median_price:",
-    market.get_median_price(252490, "No Mercy AK47"),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
-print(
-    "get_price (median_price):",
-    market.get_price(AppID.RUST, "Weapon Barrel", "median_price"),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
-# 252490 - Rust's App ID
-# get_median_price:
-# 6.7
-#
-# get_price (median_price):
-# 11.49
 
 # get_prices (1)
 market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"]
@@ -239,6 +256,7 @@ print(
 #   }
 # }
 
+
 # get_prices (2)
 app_ids = [AppID.TF2, 730, AppID.RUST]
 market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "AK-47 | Redline (Field-Tested)", "Wood"]
@@ -268,15 +286,3 @@ print(
 #     "median_price": 0.3
 #   }
 # }
-
-# get_volume
-# Getting information about "Steam" items is kind of weird, you need to look at its URL.
-# IDF (CSGO Trading Card), you need to add 730- to. So it would be "730-IDF".
-print(
-    "get_volume:",
-    market.get_volume(AppID.STEAM, "753-Sack of Gems"),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
-# get_volume:
-# 3430

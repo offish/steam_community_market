@@ -146,14 +146,14 @@ class Market:
         """
 
         return {
-            name: (
+            market_hash_name: (
                 self._overview_type_converter(overview) if type_conversion else overview
             )
-            for name, id in zip(market_hash_names, app_id)  # type: ignore
+            for id, market_hash_name in zip(app_id, market_hash_names)  # type: ignore
             for overview in [
                 _request_overview(
                     id,
-                    name,
+                    market_hash_name,
                     currency or self.currency,  # type: ignore
                     False,
                     rate_limit_handler or exponential_backoff_strategy,
@@ -321,12 +321,12 @@ class Market:
         """
 
         return {
-            f"{name}": price
-            for name, id in zip(market_hash_names, app_id)  # type: ignore
+            f"{market_hash_name}": price
+            for id, market_hash_name in zip(app_id, market_hash_names)  # type: ignore
             for price in [
                 self._get_price(
                     id,
-                    name,
+                    market_hash_name,
                     price_type,
                     type_conversion,
                     currency,
@@ -334,6 +334,65 @@ class Market:
                     rate_limit_handler or exponential_backoff_strategy,
                 )
             ]
+        }
+
+    @typechecked
+    @sanitized
+    def get_prices_from_dict(
+        self,
+        market_items_dict: dict[Union[AppID, int], list[str]],
+        price_type: tuple[str, ...] = ("lowest_price", "median_price"),
+        type_conversion: bool = True,
+        currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
+    ) -> dict[str, Optional[Union[dict[str, Optional[Union[float, str]]], float, str]]]:
+        """Gets the lowest and/or median price of one or more items on the Steam Community Market from a dictionary.
+        
+        .. versionadded:: 1.3.0
+        
+        Parameters
+        ----------
+        market_items_dict : dict[AppID or int, list[str]]
+            A dictionary containing the app IDs of the games the items are from as keys and a list of the names of the items; how they appear on the \
+            Steam Community Market as values.
+        price_type : tuple[str, ...]
+            A tuple containing the types of price. Can be either ``lowest_price`` or ``median_price``. Defaults to both.
+        type_conversion : bool
+            Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
+        currency : Currency or LegacyCurrency or int or str or None
+            Currency used for prices. Defaults to the value imposed by the instance of the class.
+        rate_limit_handler : Callable[[int], tuple[bool, float]] or None
+            A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple containing a \
+            :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to \
+            :func:`exponential_backoff_strategy <steam_community_market.requests.exponential_backoff_strategy>`.
+            
+        Raises
+        ------
+        TooManyRequestsException
+            Raised when the request limit has been reached, after reaching the max retry limit, if any. Default retry limit is 5.
+        TypeError
+            Raised when any of the parameters are of the wrong type.
+        ValueError
+            Raised when ``price_type`` is not one of ``lowest_price`` or ``median_price`` or both.
+            
+        Returns
+        -------
+        dict[str, dict[str, float or str] or float or str or None]
+            The lowest and/or median price of multiple items, if success. :obj:`None` otherwise.
+        """
+
+        return {
+            market_hash_name: self._get_price(
+                app_id,
+                market_hash_name,
+                price_type,
+                type_conversion,
+                currency,
+                False,
+                rate_limit_handler or exponential_backoff_strategy,
+            )
+            for app_id, market_hash_names in market_items_dict.items()
+            for market_hash_name in market_hash_names
         }
 
     @typechecked
@@ -385,6 +444,118 @@ class Market:
 
     @typechecked
     @sanitized
+    def get_lowest_prices(
+        self,
+        app_id: Union[AppID, int, list[Union[AppID, int]]],
+        market_hash_names: list[str],
+        type_conversion: bool = True,
+        currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
+    ) -> dict[str, Optional[Union[float, str]]]:
+        """Gets the lowest price of one or more items on the Steam Community Market, if they exist.
+        
+        .. versionadded:: 1.3.0
+        
+        Parameters
+        ----------
+        app_id : AppID or int or list[AppID or int]
+            The app ID of the game the item is from.
+        market_hash_names : list[str]
+            A list containing the names of the items; how they appear on the Steam Community Market.
+        type_conversion : bool
+            Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
+        currency : Currency or LegacyCurrency or int or str or None
+            Currency used for prices. Defaults to the value imposed by the instance of the class.
+        rate_limit_handler : Callable[[int], tuple[bool, float]] or None
+            A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple containing a \
+            :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to \
+            :func:`exponential_backoff_strategy <steam_community_market.requests.exponential_backoff_strategy>`.
+        
+        Raises
+        ------
+        TooManyRequestsException
+            Raised when the request limit has been reached, after reaching the max retry limit, if any. Default retry limit is 5.
+        TypeError
+            Raised when any of the parameters are of the wrong type.
+            
+        Returns
+        -------
+        dict[str, float or str or None]
+            The lowest price of multiple items, if success. :obj:`None` otherwise.
+        """
+
+        return {
+            f"{market_hash_name}": price
+            for id, market_hash_name in zip(app_id, market_hash_names)  # type: ignore
+            for price in [
+                self._get_price(
+                    id,
+                    market_hash_name,
+                    ("lowest_price",),
+                    type_conversion,
+                    currency,
+                    False,
+                    rate_limit_handler or exponential_backoff_strategy,
+                )
+            ]
+        }
+
+    @typechecked
+    @sanitized
+    def get_lowest_prices_from_dict(
+        self,
+        market_items_dict: dict[Union[AppID, int], list[str]],
+        type_conversion: bool = True,
+        currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
+    ) -> dict[str, Optional[Union[float, str]]]:
+        """Gets the lowest price of one or more items on the Steam Community Market from a dictionary.
+        
+        .. versionadded:: 1.3.0
+        
+        Parameters
+        ----------
+        market_items_dict : dict[AppID or int, list[str]]
+            A dictionary containing the app IDs of the games the items are from as keys and a list of the names of the items; how they appear on the \
+            Steam Community Market as values.
+        type_conversion : bool
+            Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
+        currency : Currency or LegacyCurrency or int or str or None
+            Currency used for prices. Defaults to the value imposed by the instance of the class.
+        rate_limit_handler : Callable[[int], tuple[bool, float]] or None
+            A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple containing a \
+            :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to \
+            :func:`exponential_backoff_strategy <steam_community_market.requests.exponential_backoff_strategy>`.
+        
+        Raises
+        ------
+        TooManyRequestsException
+            Raised when the request limit has been reached, after reaching the max retry limit, if any. Default retry limit is 5.
+        TypeError
+            Raised when any of the parameters are of the wrong type.
+            
+        Returns
+        -------
+        dict[str, float or str or None]
+            The lowest price of multiple items, if success. :obj:`None` otherwise.
+        """
+
+        return {
+            market_hash_name: self._get_price(
+                app_id,
+                market_hash_name,
+                ("lowest_price",),
+                type_conversion,
+                currency,
+                False,
+                rate_limit_handler or exponential_backoff_strategy,
+            )
+            for app_id, market_hash_names in market_items_dict.items()
+            for market_hash_name in market_hash_names
+        }  # type: ignore
+
+    @typechecked
+    @sanitized
     def get_median_price(
         self,
         app_id: Union[AppID, int],
@@ -432,6 +603,118 @@ class Market:
 
     @typechecked
     @sanitized
+    def get_median_prices(
+        self,
+        app_id: Union[AppID, int, list[Union[AppID, int]]],
+        market_hash_names: list[str],
+        type_conversion: bool = True,
+        currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
+    ) -> dict[str, Optional[Union[float, str]]]:
+        """Gets the median price of one or more items on the Steam Community Market, if they exist.
+        
+        .. versionadded:: 1.3.0
+        
+        Parameters
+        ----------
+        app_id : AppID or int or list[AppID or int]
+            The app ID of the game the item is from.
+        market_hash_names : list[str]
+            A list containing the names of the items; how they appear on the Steam Community Market.
+        type_conversion : bool
+            Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
+        currency : Currency or LegacyCurrency or int or str or None
+            Currency used for prices. Defaults to the value imposed by the instance of the class.
+        rate_limit_handler : Callable[[int], tuple[bool, float]] or None
+            A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple containing a \
+            :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to \
+            :func:`exponential_backoff_strategy <steam_community_market.requests.exponential_backoff_strategy>`.
+        
+        Raises
+        ------
+        TooManyRequestsException
+            Raised when the request limit has been reached, after reaching the max retry limit, if any. Default retry limit is 5.
+        TypeError
+            Raised when any of the parameters are of the wrong type.
+            
+        Returns
+        -------
+        dict[str, float or str or None]
+            The median price of multiple items, if success. :obj:`None` otherwise.
+        """
+
+        return {
+            f"{market_hash_name}": price
+            for id, market_hash_name in zip(app_id, market_hash_names)  # type: ignore
+            for price in [
+                self._get_price(
+                    id,
+                    market_hash_name,
+                    ("median_price",),
+                    type_conversion,
+                    currency,
+                    False,
+                    rate_limit_handler or exponential_backoff_strategy,
+                )
+            ]
+        }
+
+    @typechecked
+    @sanitized
+    def get_median_prices_from_dict(
+        self,
+        market_items_dict: dict[Union[AppID, int], list[str]],
+        type_conversion: bool = True,
+        currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
+    ) -> dict[str, Optional[Union[float, str]]]:
+        """Gets the median price of one or more items on the Steam Community Market from a dictionary.
+        
+        .. versionadded:: 1.3.0
+        
+        Parameters
+        ----------
+        market_items_dict : dict[AppID or int, list[str]]
+            A dictionary containing the app IDs of the games the items are from as keys and a list of the names of the items; how they appear on the \
+            Steam Community Market as values.
+        type_conversion : bool
+            Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
+        currency : Currency or LegacyCurrency or int or str or None
+            Currency used for prices. Defaults to the value imposed by the instance of the class.
+        rate_limit_handler : Callable[[int], tuple[bool, float]] or None
+            A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple containing a \
+            :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to \
+            :func:`exponential_backoff_strategy <steam_community_market.requests.exponential_backoff_strategy>`.
+        
+        Raises
+        ------
+        TooManyRequestsException
+            Raised when the request limit has been reached, after reaching the max retry limit, if any. Default retry limit is 5.
+        TypeError
+            Raised when any of the parameters are of the wrong type.
+            
+        Returns
+        -------
+        dict[str, float or str or None]
+            The median price of multiple items, if success. :obj:`None` otherwise.
+        """
+
+        return {
+            market_hash_name: self._get_price(
+                app_id,
+                market_hash_name,
+                ("median_price",),
+                type_conversion,
+                currency,
+                False,
+                rate_limit_handler or exponential_backoff_strategy,
+            )
+            for app_id, market_hash_names in market_items_dict.items()
+            for market_hash_name in market_hash_names
+        }  # type: ignore
+
+    @typechecked
+    @sanitized
     def get_volume(
         self,
         app_id: Union[AppID, int],
@@ -466,13 +749,109 @@ class Market:
             The volume of the item, if success. :obj:`None` otherwise.
         """
 
-        item = _request_overview(app_id, market_hash_name, self.currency)
-        if item is None or "volume" not in item:
-            return None
+        return self._get_volume(app_id, market_hash_name, type_conversion)
 
-        return (
-            int(item["volume"].replace(",", "")) if type_conversion else item["volume"]  # type: ignore
-        )
+    @typechecked
+    @sanitized
+    def get_volumes(
+        self,
+        app_id: Union[AppID, int, list[Union[AppID, int]]],
+        market_hash_names: list[str],
+        type_conversion: bool = True,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
+    ) -> dict[str, Optional[Union[int, str]]]:
+        """Gets the volume of one or more items on the Steam Community Market, if they exist.
+        
+        .. versionchanged:: 1.3.0
+        
+        Parameters
+        ----------
+        app_id : AppID or int or list[AppID or int]
+            The app ID of the game the item is from.
+        market_hash_names : list[str]
+            A list containing the names of the items; how they appear on the Steam Community Market.
+        type_conversion : bool
+            Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
+        rate_limit_handler : Callable[[int], tuple[bool, float]] or None
+            A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple containing a \
+            :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to \
+            :func:`exponential_backoff_strategy <steam_community_market.requests.exponential_backoff_strategy>`.
+        
+        Raises
+        ------
+        TooManyRequestsException
+            Raised when the request limit has been reached, after reaching the max retry limit, if any. Default retry limit is 5.
+        TypeError
+            Raised when any of the parameters are of the wrong type.
+            
+        Returns
+        -------
+        dict[str, int or str or None]
+            The volume of multiple items, if success. :obj:`None` otherwise.
+        """
+
+        return {
+            f"{market_hash_name}": volume
+            for id, market_hash_name in zip(app_id, market_hash_names)  # type: ignore
+            for volume in [
+                self._get_volume(
+                    id,
+                    market_hash_name,
+                    type_conversion,
+                    False,
+                    rate_limit_handler or exponential_backoff_strategy,
+                )
+            ]
+        }
+
+    @typechecked
+    @sanitized
+    def get_volumes_from_dict(
+        self,
+        market_items_dict: dict[Union[AppID, int], list[str]],
+        type_conversion: bool = True,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
+    ) -> dict[str, Optional[Union[int, str]]]:
+        """Gets the median price of one or more items on the Steam Community Market from a dictionary.
+        
+        .. versionadded:: 1.3.0
+        
+        Parameters
+        ----------
+        market_items_dict : dict[AppID or int, list[str]]
+            A dictionary containing the app IDs of the games the items are from as keys and a list of the names of the items; how they appear on the \
+            Steam Community Market as values.
+        type_conversion : bool
+            Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
+        rate_limit_handler : Callable[[int], tuple[bool, float]] or None
+            A function that handles the rate limit. It should take one parameter, the number of seconds to wait, and return a tuple containing a \
+            :obj:`bool` indicating whether the request should be retried and the number of seconds to wait. Defaults to \
+            :func:`exponential_backoff_strategy <steam_community_market.requests.exponential_backoff_strategy>`.
+        
+        Raises
+        ------
+        TooManyRequestsException
+            Raised when the request limit has been reached, after reaching the max retry limit, if any. Default retry limit is 5.
+        TypeError
+            Raised when any of the parameters are of the wrong type.
+            
+        Returns
+        -------
+        dict[str, float or str or None]
+            The median price of multiple items, if success. :obj:`None` otherwise.
+        """
+
+        return {
+            market_hash_name: self._get_volume(
+                app_id,
+                market_hash_name,
+                type_conversion,
+                False,
+                rate_limit_handler or exponential_backoff_strategy,
+            )
+            for app_id, market_hash_names in market_items_dict.items()
+            for market_hash_name in market_hash_names
+        }
 
     def _get_price(
         self,
@@ -501,6 +880,24 @@ class Market:
             result[key] = convert(price) if price is not None else price  # type: ignore
 
         return result if len(price_type) > 1 else result[price_type[0]]
+
+    def _get_volume(
+        self,
+        app_id: Union[AppID, int],
+        market_hash_name: str,
+        type_conversion: bool = True,
+        raise_exception: bool = True,
+        rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
+    ) -> Optional[Union[int, str]]:
+        overview = _request_overview(
+            app_id, market_hash_name, self.currency, raise_exception, rate_limit_handler
+        )
+        if overview is None or "volume" not in overview:
+            return None
+
+        return (
+            int(overview["volume"].replace(",", "")) if type_conversion else overview["volume"]  # type: ignore
+        )
 
     @staticmethod
     def _overview_type_converter(

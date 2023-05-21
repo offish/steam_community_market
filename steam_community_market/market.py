@@ -20,6 +20,13 @@ class Market:
         Currency used for prices. Defaults to :attr:`Currency.USD <steam_community_market.currencies.Currency.USD>`.
     language : Language or int or str
         Language used for the returned data. Defaults to :attr:`Language.ENGLISH <steam_community_market.enums.Language.ENGLISH>`.
+        
+    Attributes
+    ----------
+    currency : Currency
+        Currency used for prices.
+    language : Language
+        Language used for the returned data.
     
     Raises
     ------
@@ -32,6 +39,9 @@ class Market:
     TypeError
         Raised when any of the parameters are of the wrong type.
     """
+
+    currency: Currency
+    language: Language
 
     @typechecked
     @sanitized

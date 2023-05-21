@@ -50,8 +50,8 @@ class Market:
         currency: Union[Currency, LegacyCurrency, int, str] = Currency.USD,
         language: Union[Language, str] = Language.ENGLISH,
     ) -> None:
-        self.currency = currency
-        self.language = language
+        self.currency = currency  # type: ignore
+        self.language = language  # type: ignore
 
     @typechecked
     @sanitized
@@ -92,11 +92,13 @@ class Market:
             An overview of the item on success, :obj:`None` otherwise. Overview includes both volume and prices.
         """
 
-        data = _request_overview(app_id, market_hash_name, currency or self.currency)
+        overview = _request_overview(
+            app_id, market_hash_name, currency or self.currency  # type: ignore
+        )
         if type_conversion:
-            data = self._overview_type_converter(data)
+            overview = self._overview_type_converter(overview)
 
-        return data
+        return overview
 
     @typechecked
     @sanitized
@@ -118,7 +120,7 @@ class Market:
             If given a list, it needs to have the same length as ``market_hash_names``. If given :obj:`int` or \
             :class:`AppID <steam_community_market.enums.AppID>`, every item in ``market_hash_names`` must part of the same :class:`AppID <steam_community_market.enums>`.
         market_hash_names : list[str]
-            A list of item names; how they appear on the Steam Community Market.
+            A list containing the names of the items; how they appear on the Steam Community Market.
         type_conversion : bool
             Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         currency : Currency or LegacyCurrency or int or str or None
@@ -143,25 +145,18 @@ class Market:
             An overview of each item. Overview includes both volume and prices.
         """
 
-        if not isinstance(app_id, list):
-            app_id = [app_id] * len(market_hash_names)
-
-        if len(market_hash_names) != len(app_id):
-            raise IndexError(
-                'The length of "market_hash_names" and "app_id" must be the same.'
-            )
-
         return {
-            name: (self._overview_type_converter(result) if type_conversion else result)
-            for name, id in zip(market_hash_names, app_id)
-            for result in [
+            name: (
+                self._overview_type_converter(overview) if type_conversion else overview
+            )
+            for name, id in zip(market_hash_names, app_id)  # type: ignore
+            for overview in [
                 _request_overview(
                     id,
                     name,
-                    currency or self.currency,
-                    raise_exception=False,
-                    rate_limit_handler=rate_limit_handler
-                    or exponential_backoff_strategy,
+                    currency or self.currency,  # type: ignore
+                    False,
+                    rate_limit_handler or exponential_backoff_strategy,
                 )
             ]
         }
@@ -182,7 +177,8 @@ class Market:
         Parameters
         ----------
         market_items_dict : dict[AppID or int, list[str]]
-            A dictionary containing app IDs as `keys` and a list of item names as `value`.
+            A dictionary containing the app IDs of the games the items are from as keys and a list of the names of the items; how they appear on the \
+            Steam Community Market as values.
         type_conversion : bool
             Whether to convert the returned values to their corresponding types. Defaults to :obj:`True`.
         currency : Currency or LegacyCurrency or int or str or None
@@ -205,23 +201,22 @@ class Market:
             An overview of each item. Overview includes both volume and prices.
         """
 
-        result = {}
-        for app_id, names in market_items_dict.items():
-            for name in names:
-                overview = _request_overview(
+        return {
+            market_hash_name: (
+                self._overview_type_converter(overview) if type_conversion else overview
+            )
+            for app_id, market_hash_names in market_items_dict.items()
+            for market_hash_name in market_hash_names
+            for overview in [
+                _request_overview(
                     app_id,
-                    name,
-                    currency or self.currency,
-                    raise_exception=False,
-                    rate_limit_handler=rate_limit_handler
-                    or exponential_backoff_strategy,
+                    market_hash_name,
+                    currency or self.currency,  # type: ignore
+                    False,
+                    rate_limit_handler or exponential_backoff_strategy,
                 )
-                if type_conversion:
-                    result[name] = self._overview_type_converter(overview)
-                else:
-                    result[name] = overview
-
-        return result
+            ]
+        }
 
     @typechecked
     @sanitized
@@ -232,7 +227,7 @@ class Market:
         price_type: str,
         type_conversion: bool = True,
         currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
-    ) -> Optional[float]:
+    ) -> Optional[Union[float, str]]:
         """Gets the lowest or median price of an item.
 
         .. versionadded:: 1.3.0
@@ -263,13 +258,17 @@ class Market:
 
         Returns
         -------
-        float or None
-            The price of the item, if suceess. :obj:`None` otherwise.
+        float or str or None
+            The price of the item, if success. :obj:`None` otherwise.
         """
 
         return self._get_price(
-            app_id, market_hash_name, price_type, type_conversion, currency
-        )
+            app_id,
+            market_hash_name,
+            (price_type,),
+            type_conversion,
+            currency or self.currency,
+        )  # type: ignore
 
     @typechecked
     @sanitized
@@ -281,7 +280,7 @@ class Market:
         type_conversion: bool = True,
         currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
         rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
-    ) -> dict[str, Optional[dict[str, Union[float, str]]]]:
+    ) -> dict[str, Optional[Union[dict[str, Optional[Union[float, str]]], float, str]]]:
         """Gets the lowest and/or median price of one or more items on the Steam Community Market, if they exist.
 
         .. versionchanged:: 1.3.0
@@ -292,7 +291,7 @@ class Market:
             If given a list, it needs to have the same length as ``market_hash_names``. If given :obj:`int` or \
             :class:`AppID <steam_community_market.enums.AppID>`, every item in ``market_hash_names`` must part of the same :class:`AppID <steam_community_market.enums>`.
         market_hash_names : list[str]
-            A list of item names; how they appear on the Steam Community Market.
+            A list containing the names of the items; how they appear on the Steam Community Market.
         price_type : tuple[str, ...]
             A tuple containing the types of price. Can be either ``lowest_price`` or ``median_price``. Defaults to both.
         type_conversion : bool
@@ -317,21 +316,13 @@ class Market:
 
         Returns
         -------
-        dict[str, dict[str, float or str] or None]
-            The lowest and/or median price of multiple items, if suceess. :obj:`None` otherwise.
+        dict[str, dict[str, float or str] or float or str or None]
+            The lowest and/or median price of multiple items, if success. :obj:`None` otherwise.
         """
 
-        if not isinstance(app_id, list):
-            app_id = [app_id] * len(market_hash_names)
-
-        if len(market_hash_names) != len(app_id):
-            raise IndexError(
-                'The length of "market_hash_names" and "app_id" must be the same.'
-            )
-
         return {
-            name: price
-            for name, id in zip(market_hash_names, app_id)
+            f"{name}": price
+            for name, id in zip(market_hash_names, app_id)  # type: ignore
             for price in [
                 self._get_price(
                     id,
@@ -340,7 +331,7 @@ class Market:
                     type_conversion,
                     currency,
                     False,
-                    rate_limit_handler,
+                    rate_limit_handler or exponential_backoff_strategy,
                 )
             ]
         }
@@ -353,7 +344,7 @@ class Market:
         market_hash_name: str,
         type_conversion: bool = True,
         currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
-    ) -> Optional[float]:
+    ) -> Optional[Union[float, str]]:
         """Gets the lowest price of an item in the Steam Community Market, if is exists.
 
         .. versionchanged:: 1.3.0
@@ -381,16 +372,16 @@ class Market:
         Returns
         -------
         float or None
-            The lowest price of the item, if suceess. :obj:`None` otherwise.
+            The lowest price of the item, if success. :obj:`None` otherwise.
         """
 
         return self._get_price(
             app_id,
             market_hash_name,
-            "lowest_price",
+            ("lowest_price",),
             type_conversion,
             currency or self.currency,
-        )
+        )  # type: ignore
 
     @typechecked
     @sanitized
@@ -400,7 +391,7 @@ class Market:
         market_hash_name: str,
         type_conversion: bool = True,
         currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
-    ) -> Optional[float]:
+    ) -> Optional[Union[float, str]]:
         """Gets the median price of an item in the Steam Community Market, if it exists.
 
         .. versionchanged:: 1.3.0
@@ -428,16 +419,16 @@ class Market:
         Returns
         -------
         float or None
-            The median price of the item, if suceess. :obj:`None` otherwise.
+            The median price of the item, if success. :obj:`None` otherwise.
         """
 
         return self._get_price(
             app_id,
             market_hash_name,
-            "median_price",
+            ("median_price",),
             type_conversion,
             currency or self.currency,
-        )
+        )  # type: ignore
 
     @typechecked
     @sanitized
@@ -446,7 +437,7 @@ class Market:
         app_id: Union[AppID, int],
         market_hash_name: str,
         type_conversion: bool = True,
-    ) -> Optional[int]:
+    ) -> Optional[Union[int, str]]:
         """Gets the volume of an item in the Steam Community Market, if it exists.
 
         .. versionchanged:: 1.3.0
@@ -471,8 +462,8 @@ class Market:
 
         Returns
         -------
-        int or None
-            The volume of the item, if suceess. :obj:`None` otherwise.
+        int or str or None
+            The volume of the item, if success. :obj:`None` otherwise.
         """
 
         item = _request_overview(app_id, market_hash_name, self.currency)
@@ -480,40 +471,40 @@ class Market:
             return None
 
         return (
-            int(item["volume"].replace(",", "")) if type_conversion else item["volume"]
+            int(item["volume"].replace(",", "")) if type_conversion else item["volume"]  # type: ignore
         )
 
     def _get_price(
         self,
         app_id: Union[AppID, int],
         market_hash_name: str,
-        price_type: Union[str, tuple[str, ...]],
+        price_type: tuple[str, ...],
         type_conversion: bool = True,
-        currency: Union[Currency, LegacyCurrency, int, str] = None,
+        currency: Optional[Union[Currency, LegacyCurrency, int, str]] = None,
         raise_exception: bool = True,
         rate_limit_handler: Optional[Callable[[int], tuple[bool, float]]] = None,
     ) -> Optional[Union[dict[str, Union[float, str]], float, str]]:
         item = _request_overview(
             app_id,
             market_hash_name,
-            currency or self.currency,
+            currency or self.currency,  # type: ignore
             raise_exception,
             rate_limit_handler,
         )
         if item is None:
             return None
 
-        if any(key not in item for key in price_type):
-            return None
+        convert = self._price_to_float if type_conversion else lambda x: x
+        result = {}
+        for key in price_type:
+            price = item.get(key)
+            result[key] = convert(price) if price is not None else price  # type: ignore
 
-        if type_conversion:
-            return {key: self._price_to_float(item[key]) for key in price_type}
-        else:
-            return {key: item[key] for key in price_type}
+        return result if len(price_type) > 1 else result[price_type[0]]
 
     @staticmethod
     def _overview_type_converter(
-        overview: dict, keys_to_convert: list[str] = None
+        overview: dict, keys_to_convert: Optional[list[str]] = None
     ) -> dict[str, Union[str, int, float]]:
         valid_keys = ["lowest_price", "median_price", "volume"]
         if keys_to_convert is None:

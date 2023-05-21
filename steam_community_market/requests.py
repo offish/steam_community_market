@@ -57,7 +57,7 @@ def _request(url: str, payload: dict) -> tuple[int, dict]:
     with contextlib.suppress(ValueError):
         data = response.json()
 
-    return (response.status_code, data)
+    return (response.status_code, data or {})
 
 
 def _request_overview(

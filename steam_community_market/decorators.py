@@ -8,13 +8,20 @@ from .exceptions import (
 
 from functools import wraps
 from inspect import signature
-from typing import Any, Callable, Union, get_args, get_origin
+from itertools import repeat
+from typing import Any, Callable, Iterator, Union, get_args, get_origin
 
 
 def _sanitize_app_id_value(
-    value: Union[AppID, int, list[Union[AppID, int]]]
-) -> Union[int, list[int]]:
-    return [int(item) for item in value] if isinstance(value, list) else int(value)
+    value: Union[AppID, int, list[Union[AppID, int]]], args_dict: dict[str, Any]
+) -> Union[int, Iterator[int]]:
+    market_hash_names = args_dict.get("market_hash_names")
+    if isinstance(value, list):
+        return (int(item) for item in value)
+    elif market_hash_names is not None:
+        return repeat(int(value), len(market_hash_names))
+
+    return int(value)
 
 
 def _sanitize_currency_value(
@@ -27,8 +34,8 @@ def _sanitize_currency_value(
         return value
 
     if isinstance(value, str):
-        if LegacyCurrency.from_string(value) is not None:
-            raise LegacyCurrencyException(value)
+        if (legacy_currency := LegacyCurrency.from_string(value)) is not None:
+            raise LegacyCurrencyException(legacy_currency)
 
         currency = Currency.from_string(value)
         if currency is None:
@@ -38,7 +45,8 @@ def _sanitize_currency_value(
 
     if isinstance(value, int):
         if value in LegacyCurrency:
-            raise LegacyCurrencyException(value)
+            legacy_currency = LegacyCurrency(value)
+            raise LegacyCurrencyException(legacy_currency)
 
         try:
             value = Currency(value)
@@ -46,12 +54,6 @@ def _sanitize_currency_value(
             raise InvalidCurrencyException(value) from e
 
     return value
-
-
-def _sanitize_market_items_dict(
-    value: dict[Union[AppID, int], list[str]]
-) -> dict[int, list[str]]:
-    return {int(app_id): list(items) for app_id, items in value.items()}
 
 
 def _sanitize_language_value(value: Union[Language, str]) -> Language:
@@ -65,12 +67,26 @@ def _sanitize_language_value(value: Union[Language, str]) -> Language:
     return lanuage
 
 
+def _sanitize_market_items_dict_value(
+    value: dict[Union[AppID, int], list[str]]
+) -> dict[int, list[str]]:
+    return {int(app_id): list(items) for app_id, items in value.items()}
+
+
 def _sanitize_market_hash_name_value(value: str) -> str:
     return value.replace("/", "-")
 
 
-def _sanitize_market_hash_names_value(value: list[str]) -> list[str]:
-    return [_sanitize_market_hash_name_value(item) for item in value]
+def _sanitize_market_hash_names_value(
+    value: list[str], args_dict: dict[str, Any]
+) -> Iterator[str]:
+    app_id = args_dict.get("app_id")
+    if isinstance(app_id, list) and len(app_id) != len(value):
+        raise ValueError(
+            f"Number of market hash names ({len(value)}) must match number of app IDs ({len(app_id)})."
+        )
+
+    return (_sanitize_market_hash_name_value(item) for item in value)
 
 
 def _sanitize_price_type_value(value: Union[str, tuple[str, ...]]) -> tuple[str, ...]:
@@ -92,19 +108,21 @@ def _sanitize_price_type_value(value: Union[str, tuple[str, ...]]) -> tuple[str,
 
 
 _SANITIZE_FUNCS = {
-    "app_id": _sanitize_app_id_value,
-    "currency": _sanitize_currency_value,
-    "market_items_dict": _sanitize_market_items_dict,
-    "language": _sanitize_language_value,
-    "market_hash_name": _sanitize_market_hash_name_value,
-    "market_hash_names": _sanitize_market_hash_names_value,
-    "price_type": _sanitize_price_type_value,
+    "app_id": lambda value, args_dict: _sanitize_app_id_value(value, args_dict),
+    "currency": lambda value, _: _sanitize_currency_value(value),
+    "market_items_dict": lambda value, _: _sanitize_market_items_dict_value(value),
+    "language": lambda value, _: _sanitize_language_value(value),
+    "market_hash_name": lambda value, _: _sanitize_market_hash_name_value(value),
+    "market_hash_names": lambda value, args_dict: _sanitize_market_hash_names_value(
+        value, args_dict
+    ),
+    "price_type": lambda value, _: _sanitize_price_type_value(value),
 }
 
 
-def _sanitize_value(value: Any, param_name: str) -> Any:
+def _sanitize_value(param_name: str, value: Any, args_dict: dict[str, Any]) -> Any:
     sanitize_func = _SANITIZE_FUNCS.get(param_name)
-    return sanitize_func(value) if sanitize_func is not None else value
+    return value if sanitize_func is None else sanitize_func(value, args_dict)
 
 
 def _typecheck_dict_value(value: dict, expected_type_args: tuple[Any, ...]) -> bool:
@@ -173,18 +191,16 @@ def sanitized(func: Callable[..., Any]) -> Callable[..., Any]:
         param_names = list(sig.parameters.keys())
         sanitize_param_names = list(_SANITIZE_FUNCS.keys())
 
-        args_list = list(args)
-
-        for i, arg in enumerate(args_list):
-            arg_name = param_names[i]
+        args_dict = dict(zip(param_names, args))
+        for arg_name, arg in args_dict.items():
             if arg_name in sanitize_param_names:
-                args_list[i] = _sanitize_value(arg, arg_name)
+                args_dict[arg_name] = _sanitize_value(arg_name, arg, args_dict)
 
         for kwarg_name, kwarg_value in kwargs.items():
             if kwarg_name in sanitize_param_names:
-                kwargs[kwarg_name] = _sanitize_value(kwarg_value, kwarg_name)
+                kwargs[kwarg_name] = _sanitize_value(kwarg_name, kwarg_value, kwargs)
 
-        return func(*tuple(args_list), **kwargs)
+        return func(*tuple(args_dict.values()), **kwargs)
 
     return wrapper
 

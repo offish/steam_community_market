@@ -19,9 +19,11 @@ sys.path.append(os.path.abspath("extensions"))
 
 # -- Project information -----------------------------------------------------
 
-project = "steam community market"
-copyright = "2020, offish"
+project = "steam-community-market"
+slug = re.sub(r"\W+", "-", project.lower())
 author = "offish"
+copyright = f"2020 - 2023 {author}"
+language = "en"
 
 with open("../steam_community_market/__init__.py") as f:
     version = re.search(
@@ -38,15 +40,16 @@ release = version
 # ones.
 extensions = [
     "builder",
+    "details",
     "sphinx.ext.autodoc",
     "sphinx.ext.extlinks",
+    "exception_hierarchy",
     "sphinx.ext.intersphinx",
     "sphinx.ext.napoleon",
-    "details",
-    "exception_hierarchy",
+    "sphinx_rtd_theme",
 ]
 
-sphinx_mapping = {"py": ("https://docs.python.org/3", None)}
+intersphinx_mapping = {"py": ("https://docs.python.org/3.9", None)}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -56,58 +59,34 @@ templates_path = ["_templates"]
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-master_doc = "index"
+root_doc = "index"
 
 # -- Options for HTML output -------------------------------------------------
+
+html_favicon = "_static/favicon.ico"
+
+html_logo = "_static/logo.png"
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = "alabaster"
+html_theme = "sphinx_rtd_theme"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
+html_theme_options = {
+    "collapse_navigation": False,
+    "navigation_depth": 2,
+    "includehidden": True,
+    "logo_only": True,
+    "prev_next_buttons_location": None,
+    "style_nav_header_background": "#2a475e",
+}
+
+napoleon_google_docstring = False
+napoleon_use_ivar = True
 
 autodoc_member_order = "bysource"
-
-
-html_theme_options = {
-    "description": "by offish",
-    "github_user": "offish",
-    "github_repo": "steam_community_market",
-    "github_button": "true",
-    "github_banner": "true",
-    "fixed_sidebar": "true",
-    "donate_url": "https://steamcommunity.com/tradeoffer/new/?partner=293059984&token=0-l_idZR",
-}
-
-
-# Skal endres senere.
-"""
-{ 
-    # Under skal flyttes til _static/custom.css
-    
-    'caption_font_size': '20px',
-    'base_bg': '#282A36',  # bakgrunn
-    'code_font_family': "'Consolas', 'Menlo', 'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace'",
-    'link': '#5EBFE4',  # alle link farger
-    'sidebar_link': '#D764A7',
-    'body_bg': '#191A21',
-    'highlight_bg': '#383A59',
-    'viewcode_target_bg': '#ffd700',
-    'code_text': '#B380CF',  # etter class og funksjon navn
-    'body_text': '#F8F7F0',  # vanlig tekst og overskrifter
-    'footer_text': '#BD93F9',  # footer text farge (bra)
-    'gray_2': '#282A36',  # code embeds bra
-    'link_hover': '#3CD872', # link hover farge bra
-    'narrow_sidebar_bg': '#191A21', # når sidebar er mobilview (bra)
-    'narrow_sidebar_link': '#D764A7',  # link farger i mobilview
-    'pre_bg': '#343746',  # code blocks bla
-    'sidebar_header': '#47CF5A',  # navigation, quick search og donate support
-    'sidebar_search_button': '#F7F7F1', # søk button
-    'sidebar_text': '#F6F3ED',  # by offish og contents
-}
-"""

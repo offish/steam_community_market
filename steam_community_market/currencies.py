@@ -1,298 +1,598 @@
 from enum import IntEnum
+from functools import lru_cache
 
 
-class SteamCurrency(IntEnum):
-    """All currencies that have been supported by Steam at some point in time, including the ``legacy`` ones.
+class Currency(IntEnum):
+    """All currencies that have been supported by Steam at some point in time, including the ones found inside \
+        :class:`LegacyCurrency`.
 
-    .. list-table:: Currencies
-       :header-rows: 1
+    .. versionchanged:: 1.3.0
 
-       * - Currency Code
-         - Currency Name
-       * - USD
-         - United States Dollar
-       * - GBP
-         - Great Britain Pound
-       * - EUR
-         - Euro
-       * - CHF
-         - Swiss Franc
-       * - RUB
-         - Russian Ruble
-       * - PLN
-         - Polish Złoty
-       * - BRL
-         - Brazilian Real
-       * - JPY
-         - Japanese Yen
-       * - NOK
-         - Norwegian Krone
-       * - IDR
-         - Indonesian Rupiah
-       * - MYR
-         - Malaysian Ringgit
-       * - PHP
-         - Philippine Peso
-       * - SGD
-         - Singapore Dollar
-       * - THB
-         - Thai Baht
-       * - VND
-         - Vietnamese Dong
-       * - KRW
-         - South Korean Won
-       * - TRY
-         - Turkish Lira
-       * - UAH
-         - Ukrainian Hryvnia
-       * - MXN
-         - Mexican Peso
-       * - CAD
-         - Canadian Dollar
-       * - AUD
-         - Australian Dollar
-       * - NZD
-         - New Zealand Dollar
-       * - CNY
-         - Chinese Yuan
-       * - INR
-         - Indian Rupee
-       * - CLP
-         - Chilean Peso
-       * - PEN
-         - Peruvian Sol
-       * - COP
-         - Colombian Peso
-       * - ZAR
-         - South African Rand
-       * - HKD
-         - Hong Kong Dollar
-       * - TWD
-         - New Taiwan Dollar
-       * - SAR
-         - Saudi Riyal
-       * - AED
-         - United Arab Emirates Dirham
-       * - SEK
-         - Swedish Krona
-       * - ARS
-         - Argentine Peso
-       * - ILS
-         - Israeli New Sheqel
-       * - BYN
-         - Belarusian Ruble
-       * - KZT
-         - Kazakhstani Tenge
-       * - KWD
-         - Kuwaiti Dinar
-       * - QAR
-         - Qatari Rial
-       * - CRC
-         - Costa Rican Colón
-       * - UYU
-         - Uruguayan Peso
-       * - BGN
-         - Bulgarian Lev
-       * - HRK
-         - Croatian Kuna
-       * - CZK
-         - Czech Koruna
-       * - DKK
-         - Danish Krone
-       * - HUF
-         - Hungarian Forint
-       * - RON
-         - Romanian Leu
+    Attributes
+    ----------
+    english_name : str
+        The English name of the currency.
     """
 
-    #: United States Dollar
-    USD = 1
+    english_name: str
 
-    #: Great Britain Pound
-    GBP = 2
-
-    #: Euro
-    EUR = 3
-
-    #: Swiss Franc
-    CHF = 4
-
-    #: Russian Ruble
-    RUB = 5
-
-    #: Polish Złoty
-    PLN = 6
-
-    #: Brazilian Real
-    BRL = 7
-
-    #: Japanese Yen
-    JPY = 8
-
-    #: Norwegian Krone
-    NOK = 9
-
-    #: Indonesian Rupiah
-    IDR = 10
-
-    #: Malaysian Ringgit
-    MYR = 11
-
-    #: Philippine Peso
-    PHP = 12
-
-    #: Singapore Dollar
-    SGD = 13
-
-    #: Thai Baht
-    THB = 14
-
-    #: Vietnamese Dong
-    VND = 15
-
-    #: South Korean Won
-    KRW = 16
-
-    #: Turkish Lira
-    TRY = 17
-
-    #: Ukrainian Hryvnia
-    UAH = 18
-
-    #: Mexican Peso
-    MXN = 19
-
-    #: Canadian Dollar
-    CAD = 20
-
-    #: Australian Dollar
-    AUD = 21
-
-    #: New Zealand Dollar
-    NZD = 22
-
-    #: Chinese Yuan
-    CNY = 23
-
-    #: Indian Rupee
-    INR = 24
-
-    #: Chilean Peso
-    CLP = 25
-
-    #: Peruvian Sol
-    PEN = 26
-
-    #: Colombian Peso
-    COP = 27
-
-    #: South African Rand
-    ZAR = 28
-
-    #: Hong Kong Dollar
-    HKD = 29
-
-    #: New Taiwan Dollar
-    TWD = 30
-
-    #: Saudi Riyal
-    SAR = 31
-
-    #: United Arab Emirates Dirham
-    AED = 32
-
-    #: Swedish Krona
-    SEK = 33
-
-    #: Argentine Peso
-    ARS = 34
-
-    #: Israeli New Sheqel
-    ILS = 35
-
-    #: Belarusian Ruble
-    BYN = 36
-
-    #: Kazakhstani Tenge
-    KZT = 37
-
-    #: Kuwaiti Dinar
-    KWD = 38
-
-    #: Qatari Rial
-    QAR = 39
-
-    #: Costa Rican Colón
-    CRC = 40
-
-    #: Uruguayan Peso
-    UYU = 41
-
-    #: Bulgarian Lev
-    BGN = 42
-
-    #: Croatian Kuna
-    HRK = 43
-
-    #: Czech Koruna
-    CZK = 44
-
-    #: Danish Krone
-    DKK = 45
-
-    #: Hungarian Forint
-    HUF = 46
-
-    #: Romanian Leu
-    RON = 47
-
-
-class SteamLegacyCurrency(IntEnum):
-    """Legacy currencies that have been supported by Steam at some point in time, but are no longer.
-
-    .. list-table:: Legacy Currencies
-       :header-rows: 1
-
-       * - Currency Code
-         - Currency Name
-       * - SEK
-         - Swedish Krona
-       * - BYN
-         - Belarusian Ruble
-       * - BGN
-         - Bulgarian Lev
-       * - HRK
-         - Croatian Kuna
-       * - CZK
-         - Czech Koruna
-       * - DKK
-         - Danish Krone
-       * - HUF
-         - Hungarian Forint
-       * - RON
-         - Romanian Leu
+    USD = (1, "United States Dollar")
+    """The United States Dollar currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``United States Dollar``
     """
 
-    #: Swedish Krona
-    SEK = 33
+    GBP = (2, "Great Britain Pound")
+    """The Great Britain Pound currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Great Britain Pound``
+    """
 
-    #: Belarusian Ruble
-    BYN = 36
+    EUR = (3, "Euro")
+    """The Euro currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Euro``
+    """
 
-    #: Bulgarian Lev
-    BGN = 42
+    CHF = (4, "Swiss Franc")
+    """The Swiss Franc currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Swiss Franc``
+    """
 
-    #: Croatian Kuna
-    HRK = 43
+    RUB = (5, "Russian Ruble")
+    """The Russian Ruble currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Russian Ruble``
+    """
 
-    #: Czech Koruna
-    CZK = 44
+    PLN = (6, "Polish Złoty")
+    """The Polish Złoty currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Polish Złoty``
+    """
 
-    #: Danish Krone
-    DKK = 45
+    BRL = (7, "Brazilian Real")
+    """The Brazilian Real currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Brazilian Real``
+    """
 
-    #: Hungarian Forint
-    HUF = 46
+    JPY = (8, "Japanese Yen")
+    """The Japanese Yen currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Japanese Yen``
+    """
 
-    #: Romanian Leu
-    RON = 47
+    NOK = (9, "Norwegian Krone")
+    """The Norwegian Krone currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Norwegian Krone``
+    """
+
+    IDR = (10, "Indonesian Rupiah")
+    """The Indonesian Rupiah currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Indonesian Rupiah``
+    """
+
+    MYR = (11, "Malaysian Ringgit")
+    """The Malaysian Ringgit currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Malaysian Ringgit``
+    """
+
+    PHP = (12, "Philippine Peso")
+    """The Philippine Peso currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Philippine Peso``
+    """
+
+    SGD = (13, "Singapore Dollar")
+    """The Singapore Dollar currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Singapore Dollar``
+    """
+
+    THB = (14, "Thai Baht")
+    """The Thai Baht currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Thai Baht``
+    """
+
+    VND = (15, "Vietnamese Dong")
+    """The Vietnamese Dong currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Vietnamese Dong``
+    """
+
+    KRW = (16, "South Korean Won")
+    """The South Korean Won currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``South Korean Won``
+    """
+
+    TRY = (17, "Turkish Lira")
+    """The Turkish Lira currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Turkish Lira``
+    """
+
+    UAH = (18, "Ukrainian Hryvnia")
+    """The Ukrainian Hryvnia currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Ukrainian Hryvnia``
+    """
+
+    MXN = (19, "Mexican Peso")
+    """The Mexican Peso currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Mexican Peso``
+    """
+
+    CAD = (20, "Canadian Dollar")
+    """The Australian Dollar currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Canadian Dollar``
+    """
+
+    AUD = (21, "Australian Dollar")
+    """The Australian Dollar currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Australian Dollar``
+    """
+
+    NZD = (22, "New Zealand Dollar")
+    """The New Zealand Dollar currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``New Zealand Dollar``
+    """
+
+    CNY = (23, "Chinese Yuan")
+    """The Chinese Yuan currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Chinese Yuan``
+    """
+
+    INR = (24, "Indian Rupee")
+    """The Indian Rupee currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Indian Rupee``
+    """
+
+    CLP = (25, "Chilean Peso")
+    """The Chilean Peso currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Chilean Peso``
+    """
+
+    PEN = (26, "Peruvian Sol")
+    """The Peruvian Sol currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Peruvian Sol``
+    """
+
+    COP = (27, "Colombian Peso")
+    """The Colombian Peso currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Colombian Peso``
+    """
+
+    ZAR = (28, "South African Rand")
+    """The South African Rand currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``South African Rand``
+    """
+
+    HKD = (29, "Hong Kong Dollar")
+    """The Hong Kong Dollar currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Hong Kong Dollar``
+    """
+
+    TWD = (30, "New Taiwan Dollar")
+    """The New Taiwan Dollar currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``New Taiwan Dollar``
+    """
+
+    SAR = (31, "Saudi Riyal")
+    """The Saudi Riyal currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Saudi Riyal``
+    """
+
+    AED = (32, "United Arab Emirates Dirham")
+    """The United Arab Emirates Dirham currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``United Arab Emirates Dirham``
+    """
+
+    SEK = (33, "Swedish Krona")
+    """The Swedish Krona currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Swedish Krona``
+    """
+
+    ARS = (34, "Argentine Peso")
+    """The Argentine Peso currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Argentine Peso``
+    """
+
+    ILS = (35, "Israeli New Sheqel")
+    """The Israeli New Sheqel currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Israeli New Sheqel``
+    """
+
+    BYN = (36, "Belarusian Ruble")
+    """The Belarusian Ruble currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Belarusian Ruble``
+    """
+
+    KZT = (37, "Kazakhstani Tenge")
+    """The Kazakhstani Tenge currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Kazakhstani Tenge``
+    """
+
+    KWD = (38, "Kuwaiti Dinar")
+    """The Kuwaiti Dinar currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Kuwaiti Dinar``
+    """
+
+    QAR = (39, "Qatari Rial")
+    """The Qatari Rial currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Qatari Rial``
+    """
+
+    CRC = (40, "Costa Rican Colón")
+    """The Costa Rican Colón currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Costa Rican Colón``
+    """
+
+    UYU = (41, "Uruguayan Peso")
+    """The Uruguayan Peso currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Uruguayan Peso``
+    """
+
+    BGN = (42, "Bulgarian Lev")
+    """The Bulgarian Lev currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Bulgarian Lev``
+    """
+
+    HRK = (43, "Croatian Kuna")
+    """The Croatian Kuna currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Croatian Kuna``
+    """
+
+    CZK = (44, "Czech Koruna")
+    """The Czech Koruna currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Czech Koruna``
+    """
+
+    DKK = (45, "Danish Krone")
+    """The Danish Krone currency.
+
+    Attributes
+    ----------
+    english_name : str
+        ``Danish Krone``
+    """
+
+    HUF = (46, "Hungarian Forint")
+    """The Hungarian Forint currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Hungarian Forint``
+    """
+
+    RON = (47, "Romanian Leu")
+    """The Romanian Leu currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Romanian Leu``
+    """
+
+    def __new__(cls, value: int, english_name: str):
+        obj = int.__new__(cls, value)
+        obj._value_ = value
+        obj.english_name = english_name
+        return obj
+
+    @classmethod
+    @lru_cache(maxsize=None)
+    def from_string(cls, currency: str):
+        """Get a currency from a string. The string can be the currencies English name or ISO 4217 code.
+
+        .. versionadded:: 1.3.0
+
+        Parameters
+        ----------
+        currency : str
+            The currency to get in string form.
+
+        Returns
+        -------
+        Currency or None
+            The currency object, or :obj:`None` if the currency was not found.
+        """
+
+        if not hasattr(cls, "_lookup"):
+            cls._lookup = {
+                key.upper(): curr
+                for curr in cls
+                for key in (
+                    curr.name,
+                    curr.english_name,
+                )
+            }
+
+        return cls._lookup.get(currency.upper())
+
+
+class LegacyCurrency(IntEnum):
+    """Legacy currencies that have been supported by Steam, at some point in time, but are not any longer.
+
+    .. versionadded:: 1.3.0
+
+    Attributes
+    ----------
+    english_name : str
+        The English name of the currency.
+    """
+
+    english_name: str
+
+    SEK = (33, "Swedish Krona")
+    """The Swedish Krona currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Swedish Krona``
+    """
+
+    BYN = (36, "Belarusian Ruble")
+    """The Belarusian Ruble currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Belarusian Ruble``
+    """
+
+    BGN = (42, "Bulgarian Lev")
+    """The Bulgarian Lev currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Bulgarian Lev``
+    """
+
+    HRK = (43, "Croatian Kuna")
+    """The Croatian Kuna currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Croatian Kuna``
+    """
+
+    CZK = (44, "Czech Koruna")
+    """The Czech Koruna currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Czech Koruna``
+    """
+
+    DKK = (45, "Danish Krone")
+    """The Danish Krone currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Danish Krone``
+    """
+
+    HUF = (46, "Hungarian Forint")
+    """The Hungarian Forint currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Hungarian Forint``
+    """
+
+    RON = (47, "Romanian Leu")
+    """The Romanian Leu currency.
+    
+    Attributes
+    ----------
+    english_name : str
+        ``Romanian Leu``
+    """
+
+    def __new__(cls, value: int, english_name: str):
+        obj = int.__new__(cls, value)
+        obj._value_ = value
+        obj.english_name = english_name
+        return obj
+
+    @classmethod
+    @lru_cache(maxsize=None)
+    def from_string(cls, currency: str):
+        """Get a legacy currency from a string. The string can be the currencies English name or ISO 4217 code.
+
+        .. versionadded:: 1.3.0
+
+        Parameters
+        ----------
+        currency : str
+            The legacy currency to get in string form.
+
+        Returns
+        -------
+        LegacyCurrency or None
+            The legacy currency object, or :obj:`None` if the currency was not found.
+        """
+
+        if not hasattr(cls, "_lookup"):
+            cls._lookup = {
+                key.upper(): legacy_curr
+                for legacy_curr in cls
+                for key in (
+                    legacy_curr.name,
+                    legacy_curr.english_name,
+                )
+            }
+
+        return cls._lookup.get(currency.upper())

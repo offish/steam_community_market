@@ -23,7 +23,7 @@ A synchronous Python read-only wrapper for the Steam Community Market API.
 
 ## Introduction
 
-`steam-community-market` is a Python library that provides a simple and efficient way to interact with the Steam Community Market API. It is designed to be easy to use and provides support for Python 3.9 and above.
+`steam-community-market` is a [Python](https://www.python.org/) library that provides a simple and efficient way to interact with the [Steam Community Market](https://steamcommunity.com/market/) API. It is designed to be easy to use and provides support for [Python 3.9](https://docs.python.org/3.9/) and above.
 
 ### Features:
 
@@ -55,13 +55,13 @@ To use the library, first import it in your Python script:
 from steam_community_market import *
 ```
 
-Then, create an instance of the `Market` class specifying the currency you want to use:
+Then, create an instance of the `Market` class, specifying the currency you want to use:
 
 ```python
-market = Market(currency=SteamCurrency.USD)
+market = Market(currency=Currency.USD)
 ```
 
-Now you can use the various functions provided by the library to interact with the Steam Community Market API.
+Now you can use the various functions provided by the library to interact with the [Steam Community Market](https://steamcommunity.com/market/) API.
 
 ## Examples
 
@@ -137,20 +137,30 @@ print(
 ### Example: `get_lowest_price` / `get_price(lowest_price)`
 
 ```python
-print(
-    "get_lowest_price:",
-    market.get_lowest_price(AppID.CSGO, "Weapon Barrel"),
-    sep=os.linesep,
-    end=os.linesep * 2,
-)
+try:
+    print(
+        "get_lowest_price:",
+        market.get_lowest_price(AppID.CSGO, "Weapon Barrel"),
+        sep=os.linesep,
+        end=os.linesep * 2,
+    )
+except InvalidItemOrAppIDException as e:
+    print(
+        "[InvalidItemOrAppIDException] get_lowest_price:",
+        e,
+        sep=os.linesep,
+        end=os.linesep * 2,
+    )
+
 print(
     "get_price (lowest_price):",
     market.get_price(252490, "No Mercy AK47", "lowest_price"),
     sep=os.linesep,
+    end=os.linesep * 2,
 )
 # 252490 - Rust's App ID
-# get_lowest_price:
-# 12.26
+# [InvalidItemOrAppIDException] get_lowest_price:
+# Item "Weapon Barrel" with app ID "730" is considered invalid by the Steam Community Market.
 #
 # get_price (lowest_price):
 # 6.33

@@ -9,8 +9,12 @@ from steam_community_market import (
 )
 
 
-# Because we love "Mann Co. Supply Crate Key" <3
+# Define some constants.
+AK_47_REDLINE_FIELD_TESTED = "AK-47 | Redline (Field-Tested)"
 MANN_CO_SUPPLY_CRATE_KEY = "Mann Co. Supply Crate Key"
+NAME_TAG = "Name Tag"
+THE_FESTIVIZER = "The Festivizer"
+
 
 # Could either be: "Euro", "EUR" or 3.
 # For "USD"; leave it empty or use Currency.USD, "United States Dollar", "USD" or 1.
@@ -102,7 +106,7 @@ print(
 
 
 # get_overviews (1)
-market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"]
+market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, NAME_TAG, THE_FESTIVIZER]
 print(
     "get_overviews (1):",
     json.dumps(
@@ -138,7 +142,7 @@ print(
 
 # get_overviews (2)
 app_ids = [AppID.TF2, 730, AppID.RUST]
-market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "AK-47 | Redline (Field-Tested)", "Wood"]
+market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, AK_47_REDLINE_FIELD_TESTED, "Wood"]
 print(
     "get_overviews (2):",
     json.dumps(
@@ -174,8 +178,8 @@ print(
 
 # get_overviews_from_dict
 market_items_dict = {
-    AppID.TF2: [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"],
-    730: ["AK-47 | Redline (Field-Tested)", "M4A4 | Howl (Field-Tested)"],
+    AppID.TF2: [MANN_CO_SUPPLY_CRATE_KEY, NAME_TAG, THE_FESTIVIZER],
+    AppID.CSGO: [AK_47_REDLINE_FIELD_TESTED, "M4A4 | Howl (Field-Tested)"],
     252490: ["Weapon Stock", "Weapon Grip"],
 }
 
@@ -228,7 +232,7 @@ print(
 
 
 # get_prices (1)
-market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "Name Tag", "The Festivizer"]
+market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, NAME_TAG, THE_FESTIVIZER]
 
 print(
     "get_prices (1):",
@@ -259,7 +263,7 @@ print(
 
 # get_prices (2)
 app_ids = [AppID.TF2, 730, AppID.RUST]
-market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, "AK-47 | Redline (Field-Tested)", "Wood"]
+market_hash_names = [MANN_CO_SUPPLY_CRATE_KEY, AK_47_REDLINE_FIELD_TESTED, "Wood"]
 
 print(
     "get_prices (2):",

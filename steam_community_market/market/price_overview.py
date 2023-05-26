@@ -19,7 +19,7 @@ class PriceOverview:
     def __init__(self, currency: Currency):
         self.currency = currency
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, currency: Currency):
         if cls is PriceOverview:
             raise TypeError(
                 "PriceOverview is an abstract class and cannot be instantiated."

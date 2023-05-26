@@ -1,57 +1,31 @@
-from .currencies import Currency, LegacyCurrency
-from .decorators import sanitized, typechecked
-from .enums import AppID, Language
-from .requests import _request_overview, exponential_backoff_strategy
+from ..currencies import Currency, LegacyCurrency
+from ..decorators import sanitized, typechecked
+from ..enums import AppID
+from ..requests import _request_overview, exponential_backoff_strategy
 
 from typing import Callable, Optional, Union
 
 import re
 
 
-class Market:
-    """A class representing a Steam Community Market object.
+class PriceOverview:
+    """A class representing the cumulus of functionalities that are using the ``/market/priceoverview`` endpoint of the Steam Community Market API.
 
-    It allows users to interact with the Steam Community Market API, by providing methods to get different information about items in the market. \
-        It supports all currencies and languages that are supported by the Steam Community Market API.
-
-    Parameters
-    ----------
-    currency : Currency or LegacyCurrency or int or str
-        Currency used for prices. Defaults to :attr:`Currency.USD <steam_community_market.currencies.Currency.USD>`.
-    language : Language or int or str
-        Language used for the returned data. Defaults to :attr:`Language.ENGLISH <steam_community_market.enums.Language.ENGLISH>`.
-        
-    Attributes
-    ----------
-    currency : Currency
-        Currency used for prices.
-    language : Language
-        Language used for the returned data.
-    
-    Raises
-    ------
-    InvalidCurrencyException
-        Raised when the ``currency`` is invalid.
-    LegacyCurrencyException
-        Raised when the ``currency`` is a legacy currency.
-    InvalidLanguageException
-        Raised when the ``language`` is invalid.
-    TypeError
-        Raised when any of the parameters are of the wrong type.
+    Note
+    ----
+    This class is abstract and should not be instantiated directly, use :class:`Market <steam_community_market.market.instance.Market>` instead.
     """
 
-    currency: Currency
-    language: Language
+    def __init__(self, currency: Currency):
+        self.currency = currency
 
-    @typechecked
-    @sanitized
-    def __init__(
-        self,
-        currency: Union[Currency, LegacyCurrency, int, str] = Currency.USD,
-        language: Union[Language, str] = Language.ENGLISH,
-    ) -> None:
-        self.currency = currency  # type: ignore
-        self.language = language  # type: ignore
+    def __new__(cls, *args, **kwargs):
+        if cls is PriceOverview:
+            raise TypeError(
+                "PriceOverview is an abstract class and cannot be instantiated."
+            )
+
+        return super().__new__(cls)
 
     @typechecked
     @sanitized
@@ -915,7 +889,7 @@ class Market:
         result = {}
         for key, value in overview.items():
             if key in keys_to_convert and key in ["lowest_price", "median_price"]:
-                result[key] = Market._price_to_float(value)
+                result[key] = PriceOverview._price_to_float(value)
             elif key in keys_to_convert and key == "volume":
                 result[key] = int(value.replace(",", ""))
             else:

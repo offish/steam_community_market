@@ -1,5 +1,3 @@
-.. currentmodule:: steam_community_market.market
-
 ************
 Installation
 ************
@@ -25,7 +23,7 @@ To use the library, first import it in your Python script:
 
     from steam_community_market import *
 
-Then, create a new instance of the :class:`Market` class, specifying the currency you want to use:
+Then, create a new instance of the :class:`Market <steam_community_market.market.instance>` class, specifying the currency you want to use:
 
 .. code-block:: python
 

@@ -141,7 +141,9 @@ def _typecheck_set_value(value: set, expected_type_args: tuple[Any, ...]) -> boo
     return all(_typecheck_value(x, expected_type_args[0]) for x in value)
 
 
-def _typecheck_tuple_value(value: tuple, expected_type_args: tuple[Any, ...]) -> bool:
+def _typecheck_tuple_value(
+    value: tuple[Any, ...], expected_type_args: tuple[Any, ...]
+) -> bool:
     return all(_typecheck_value(x, t) for x, t in zip(value, expected_type_args))
 
 

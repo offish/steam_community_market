@@ -13,7 +13,7 @@ from .exceptions import (
     LegacyCurrencyException,
     TooManyRequestsException,
 )
-from .market import Market
+from .market.instance import Market
 from .requests import exponential_backoff_strategy
 
 __version__ = "1.3.0"
